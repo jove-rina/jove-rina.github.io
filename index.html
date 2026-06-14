@@ -1,433 +1,751 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jove Rina · 开源项目集</title>
-    <meta name="description" content="Jove Rina — Hermes Agent 社区技能与开源工具。" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #0a0a0f;
-            --surface: #12121a;
-            --surface2: #1a1a28;
-            --border: #2a2a3e;
-            --text: #e4e4ed;
-            --text-secondary: #9494a8;
-            --accent: #a78bfa;
-            --accent2: #6ee7b7;
-            --accent3: #f472b6;
-            --gradient: linear-gradient(135deg, #a78bfa, #6ee7b7);
-            --radius: 16px;
-            --radius-sm: 8px;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jove Rina</title>
+<meta name="description" content="Jove Rina — Hermes Agent Skills & Open Source" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+/* ═══════════════════════════════════════
+   ROOT
+   ═══════════════════════════════════════ */
+:root {
+  --bg: #050510;
+  --bg2: #0a0a20;
+  --surface: rgba(18,18,34,.72);
+  --surface-border: rgba(167,139,250,.15);
+  --text: #eeeef8;
+  --text2: #8888bb;
+  --accent: #a78bfa;
+  --cyan: #22d3ee;
+  --pink: #e879f9;
+  --green: #6ee7b7;
+  --gradient-1: linear-gradient(135deg,#a78bfa,#22d3ee);
+  --gradient-2: linear-gradient(135deg,#22d3ee,#e879f9);
+  --gradient-3: linear-gradient(135deg,#a78bfa,#e879f9);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --font: 'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono: 'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+::selection{background:rgba(167,139,250,.35)}
 
-        html {
-            scroll-behavior: smooth;
-        }
+/* ═══════════════════════════════════════
+   CANVAS BG
+   ═══════════════════════════════════════ */
+#canvas-bg{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+}
 
-        body {
-            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+/* ═══════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  background:rgba(5,5,16,.6);
+  border-bottom:1px solid var(--surface-border);
+  padding:0 28px;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.nav.hidden{transform:translateY(-100%)}
+.nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.nav-brand{
+  font-size:18px;font-weight:800;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.3px;
+}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  position:relative;transition:color .3s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:var(--gradient-1);border-radius:2px;
+  transition:width .3s cubic-bezier(.4,0,.2,1);
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
 
-        /* ── Animated background ── */
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            background-image:
-                linear-gradient(var(--border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 60px 60px;
-            opacity: 0.3;
-        }
+.lang-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:100px;
+  background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.2);
+  color:var(--accent);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .3s;
+  font-family:var(--font);
+}
+.lang-btn:hover{background:rgba(167,139,250,.2);border-color:var(--accent)}
 
-        .bg-glow {
-            position: fixed;
-            top: -40vh;
-            left: -20vw;
-            width: 80vw;
-            height: 80vh;
-            background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
+/* ═══════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════ */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:120px 28px 80px;
+}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%}
 
-        .bg-glow-2 {
-            position: fixed;
-            bottom: -30vh;
-            right: -20vw;
-            width: 70vw;
-            height: 70vh;
-            background: radial-gradient(circle, rgba(110, 231, 183, 0.06) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 16px;border-radius:100px;
+  background:rgba(167,139,250,.08);
+  border:1px solid rgba(167,139,250,.15);
+  font-size:12px;font-weight:500;color:var(--accent);
+  margin-bottom:32px;
+  opacity:0;transform:translateY(20px);
+  animation:fadeUp .8s .2s forwards;
+}
+.hero-badge .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);display:inline-block;
+  animation:pulseDot 2s ease-in-out infinite;
+}
 
-        /* ── Layout ── */
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
+.hero-title{
+  font-size:clamp(44px,7vw,88px);
+  font-weight:900;
+  line-height:1.05;
+  margin-bottom:8px;
+  opacity:0;transform:translateY(30px);
+  animation:fadeUp .8s .4s forwards;
+}
+.hero-title .gradient{
+  background:var(--gradient-1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
 
-        /* ── Hero ── */
-        .hero {
-            padding: 100px 0 80px;
-            text-align: center;
-        }
+.hero-sub{
+  font-size:clamp(16px,2vw,22px);
+  color:var(--text2);
+  max-width:620px;
+  margin-bottom:6px;
+  opacity:0;transform:translateY(30px);
+  animation:fadeUp .8s .6s forwards;
+}
 
-        .hero-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 100px;
-            background: rgba(167, 139, 250, 0.12);
-            border: 1px solid rgba(167, 139, 250, 0.25);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--accent);
-            letter-spacing: 0.5px;
-            margin-bottom: 32px;
-        }
+.hero-type{
+  font-family:var(--mono);
+  font-size:clamp(13px,1.2vw,15px);
+  color:var(--cyan);
+  min-height:1.8em;
+  margin-bottom:40px;
+  opacity:0;
+  animation:fadeUp .8s .7s forwards;
+}
+.hero-type .cursor{
+  display:inline-block;
+  width:2px;height:1.1em;
+  background:var(--cyan);
+  margin-left:2px;
+  animation:blink 1s step-end infinite;
+  vertical-align:text-bottom;
+}
 
-        .hero-logo {
-            font-size: 64px;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
-        }
+.hero-cta{
+  display:flex;gap:14px;flex-wrap:wrap;
+  opacity:0;transform:translateY(30px);
+  animation:fadeUp .8s .9s forwards;
+}
+.btn-primary,.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:100px;
+  font-size:14px;font-weight:600;text-decoration:none;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+  font-family:var(--font);
+  position:relative;overflow:hidden;
+}
+.btn-primary{
+  background:var(--gradient-1);
+  color:#050510;border:none;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(167,139,250,.35);
+}
+.btn-secondary{
+  background:transparent;
+  border:1px solid var(--surface-border);
+  color:var(--text);
+}
+.btn-secondary:hover{
+  border-color:var(--accent);
+  background:rgba(167,139,250,.08);
+  transform:translateY(-2px);
+}
 
-        .hero-sub {
-            font-size: 20px;
-            color: var(--text-secondary);
-            font-weight: 400;
-            max-width: 540px;
-            margin: 0 auto 12px;
-        }
+/* Stats */
+.hero-stats{
+  display:flex;gap:48px;margin-top:56px;
+  opacity:0;transform:translateY(30px);
+  animation:fadeUp .8s 1.1s forwards;
+}
+.stat-item{}
+.stat-num{
+  font-size:36px;font-weight:800;
+  background:var(--gradient-1);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.stat-label{font-size:13px;color:var(--text2);margin-top:4px}
 
-        .hero-tagline {
-            font-size: 15px;
-            color: var(--text-secondary);
-            opacity: 0.7;
-            letter-spacing: 0.3px;
-        }
+/* ═══════════════════════════════════════
+   SCROLL INDICATOR
+   ═══════════════════════════════════════ */
+.scroll-ind{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--text2);font-size:11px;letter-spacing:2px;
+  opacity:0;animation:fadeUp 1s 1.5s forwards;
+}
+.scroll-ind .mouse{
+  width:20px;height:32px;border:2px solid var(--text2);
+  border-radius:12px;position:relative;
+}
+.scroll-ind .mouse::after{
+  content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
+  width:3px;height:8px;border-radius:3px;
+  background:var(--accent);
+  animation:scrollWheel 2s ease-in-out infinite;
+}
 
-        /* ── Projects ── */
-        .section {
-            padding: 72px 0;
-        }
+/* ═══════════════════════════════════════
+   SECTION
+   ═══════════════════════════════════════ */
+.section{
+  position:relative;z-index:1;
+  padding:120px 28px;
+}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:64px}
+.section-label{
+  font-size:12px;font-weight:600;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:12px
+}
+.section-title{
+  font-size:clamp(28px,4vw,44px);font-weight:800;
+  margin-bottom:12px;
+}
+.section-desc{
+  color:var(--text2);font-size:15px;max-width:520px;margin:0 auto
+}
 
-        .section-title {
-            font-size: 26px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+/* ═══════════════════════════════════════
+   PROJECT CARDS
+   ═══════════════════════════════════════ */
+.projects-grid{
+  display:grid;grid-template-columns:1fr;gap:20px;
+}
 
-        .section-title .icon {
-            font-size: 24px;
-        }
+.project-card{
+  display:flex;align-items:flex-start;gap:24px;
+  padding:28px 32px;
+  background:var(--surface);
+  border:1px solid var(--surface-border);
+  border-radius:var(--radius);
+  text-decoration:none;color:inherit;
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(40px);
+}
+.project-card.visible{opacity:1;transform:translateY(0)}
+.project-card:hover{
+  border-color:var(--accent);
+  transform:translateY(-4px) scale(1.005);
+  box-shadow:0 20px 60px rgba(167,139,250,.12);
+}
+.project-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gradient-1);opacity:0;
+  transition:opacity .5s;pointer-events:none;
+}
+.project-card:hover::before{opacity:.04}
 
-        .section-desc {
-            color: var(--text-secondary);
-            font-size: 15px;
-            margin-bottom: 40px;
-            max-width: 600px;
-        }
+.project-icon{
+  width:52px;height:52px;border-radius:14px;
+  background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+  transition:transform .4s;
+}
+.project-card:hover .project-icon{transform:scale(1.08) rotate(-4deg)}
 
-        .project-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+.project-info h3{
+  font-size:18px;font-weight:700;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.project-info h3 .arrow{
+  opacity:0;transform:translateX(-8px);
+  transition:all .4s;font-size:16px;
+}
+.project-card:hover .arrow{opacity:1;transform:translateX(0)}
+.project-info p{font-size:14px;color:var(--text2);line-height:1.7}
+.project-meta{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.project-meta span{
+  font-size:12px;color:var(--text2);opacity:.7;
+  display:flex;align-items:center;gap:4px;
+}
+.project-meta span::before{content:'⬡';opacity:.5;font-size:10px}
 
-        .project-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px 28px;
-            text-decoration: none;
-            color: inherit;
-            transition: border-color 0.2s, transform 0.2s;
-        }
+/* ═══════════════════════════════════════
+   CONTACT
+   ═══════════════════════════════════════ */
+.contact-grid{
+  display:flex;flex-wrap:wrap;gap:14px;justify-content:center
+}
+.contact-link{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;border-radius:var(--radius-sm);
+  background:var(--surface);
+  border:1px solid var(--surface-border);
+  color:var(--text);text-decoration:none;
+  font-size:14px;font-weight:500;
+  transition:all .4s;
+  opacity:0;transform:translateY(20px);
+}
+.contact-link.visible{opacity:1;transform:translateY(0)}
+.contact-link:hover{
+  border-color:var(--accent);
+  background:rgba(167,139,250,.08);
+  transform:translateY(-3px);
+}
 
-        .project-card:hover {
-            border-color: var(--accent);
-            transform: translateX(4px);
-        }
+/* ═══════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════ */
+.footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--surface-border);
+  padding:40px 28px 56px;text-align:center;
+}
+.footer p{font-size:13px;color:var(--text2);opacity:.6}
+.footer .heart{color:var(--pink)}
 
-        .project-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--surface2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
+/* ═══════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════ */
+@keyframes fadeUp{
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes blink{
+  50%{opacity:0}
+}
+@keyframes pulseDot{
+  0%,100%{opacity:1}
+  50%{opacity:.3}
+}
+@keyframes scrollWheel{
+  0%{transform:translateX(-50%) translateY(0);opacity:1}
+  100%{transform:translateX(-50%) translateY(12px);opacity:0}
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+@keyframes glowPulse{
+  0%,100%{opacity:.6}
+  50%{opacity:1}
+}
+@keyframes particleFloat{
+  0%{transform:translateY(0) rotate(0deg);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-100vh) rotate(720deg);opacity:0}
+}
 
-        .project-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .project-info h3 .arrow {
-            opacity: 0;
-            margin-left: 6px;
-            transition: opacity 0.2s, transform 0.2s;
-            display: inline-block;
-        }
-
-        .project-card:hover .arrow {
-            opacity: 1;
-            transform: translateX(4px);
-        }
-
-        .project-info p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .project-meta {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .project-meta .meta-item {
-            font-size: 12px;
-            color: var(--text-secondary);
-            opacity: 0.7;
-        }
-
-        .project-meta .meta-item::before {
-            content: "⬡ ";
-            opacity: 0.5;
-        }
-
-        /* ── Repo stats ── */
-        .repo-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 48px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-num {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        /* ── Contact ── */
-        .contact-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-
-        .contact-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: var(--radius-sm);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .contact-link:hover {
-            border-color: var(--accent);
-            background: var(--surface2);
-        }
-
-        /* ── Footer ── */
-        .footer {
-            border-top: 1px solid var(--border);
-            padding: 32px 0 48px;
-            text-align: center;
-        }
-
-        .footer p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
-
-        .footer .heart {
-            color: var(--accent3);
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 768px) {
-            .hero-logo {
-                font-size: 44px;
-            }
-            .hero-sub {
-                font-size: 17px;
-            }
-            .repo-stats {
-                gap: 24px;
-            }
-            .project-card {
-                flex-direction: column;
-                gap: 14px;
-            }
-            .section {
-                padding: 48px 0;
-            }
-            .hero {
-                padding: 64px 0 48px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-logo {
-                font-size: 36px;
-            }
-            .container {
-                padding: 0 16px;
-            }
-            .contact-links {
-                flex-direction: column;
-            }
-        }
-    </style>
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero{padding:100px 20px 60px}
+  .hero-stats{gap:28px;margin-top:40px}
+  .stat-num{font-size:28px}
+  .project-card{flex-direction:column;padding:22px 24px}
+  .project-icon{width:44px;height:44px;font-size:20px}
+  .section{padding:72px 20px}
+  .section-header{margin-bottom:40px}
+}
+@media(max-width:480px){
+  .hero-cta{flex-direction:column}
+  .btn-primary,.btn-secondary{justify-content:center}
+}
+</style>
 </head>
 <body>
 
-    <!-- Background -->
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
-    <div class="bg-glow-2"></div>
+<!-- ═══ Canvas BG ═══ -->
+<canvas id="canvas-bg"></canvas>
 
-    <!-- ── Hero ── -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-badge">✦ 开源项目集</div>
-            <h1 class="hero-logo">Jove Rina</h1>
-            <p class="hero-sub">
-                专注于 Hermes Agent 社区技能开发<br />
-                打造实用、优雅、可复用的 AI 工具
-            </p>
-            <p class="hero-tagline">
-                让每个 Agent 都能做得更好
-            </p>
-            <div class="repo-stats">
-                <div class="stat-item">
-                    <div class="stat-num">1</div>
-                    <div class="stat-label">Skill</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">2</div>
-                    <div class="stat-label">公开仓库</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">∞</div>
-                    <div class="stat-label">持续更新</div>
-                </div>
-            </div>
+<!-- ═══ Nav ═══ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Jove Rina</a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#projects" data-i18n="nav.projects">项目</a>
+        <a href="#contact" data-i18n="nav.contact">联系</a>
+        <a href="https://github.com/jove-rina" target="_blank">GitHub</a>
+      </div>
+      <button class="lang-btn" id="langBtn">
+        <span id="langLabel">EN</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      <span data-i18n="hero.badge">Open Source · Hermes Skills</span>
+    </div>
+    <h1 class="hero-title">
+      <span data-i18n="hero.title1">Build with</span><br />
+      <span class="gradient" data-i18n="hero.title2">Jove Rina</span>
+    </h1>
+    <p class="hero-sub" data-i18n="hero.sub">
+      Hermes Agent 社区技能开发 · 开源 · 创意与技术交汇
+    </p>
+    <div class="hero-type"><span id="typing"></span><span class="cursor"></span></div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">
+        <span data-i18n="hero.cta1">探索项目</span> →
+      </a>
+      <a href="https://github.com/jove-rina" target="_blank" class="btn-secondary">
+        <span data-i18n="hero.cta2">GitHub 组织</span> ↗
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num" data-count="1">0</div>
+        <div class="stat-label" data-i18n="hero.stat1">Hermes Skill</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-count="2">0</div>
+        <div class="stat-label" data-i18n="hero.stat2">公开仓库</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-ind">
+    <span data-i18n="hero.scroll">SCROLL</span>
+    <div class="mouse"></div>
+  </div>
+</section>
+
+<!-- ═══ Projects ═══ -->
+<section class="section" id="projects">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label" data-i18n="projects.label">项目</div>
+      <h2 class="section-title" data-i18n="projects.title">开源项目</h2>
+      <p class="section-desc" data-i18n="projects.desc">
+        为 Hermes Agent 社区贡献的技能集，全部采用 Tap 标准格式
+      </p>
+    </div>
+    <div class="projects-grid">
+      <a href="projects/jove-hermes-skills/" class="project-card reveal">
+        <div class="project-icon">🧩</div>
+        <div class="project-info">
+          <h3>
+            jove-hermes-skills
+            <span class="arrow">→</span>
+          </h3>
+          <p data-i18n="projects.card1.desc">
+            Hermes Agent 社区技能集。包含实用工具、创意生成、自动化工作流，
+            全部经过跨模型审查，开箱即用。
+          </p>
+          <div class="project-meta">
+            <span>Hermes Agent</span>
+            <span>Skills · Taps</span>
+            <span>跨模型验证</span>
+          </div>
         </div>
-    </section>
+      </a>
+    </div>
+  </div>
+</section>
 
-    <!-- ── Projects ── -->
-    <section class="section" id="projects">
-        <div class="container">
-            <h2 class="section-title"><span class="icon">📦</span> 项目</h2>
-            <p class="section-desc">为 Hermes Agent 社区贡献的技能和工具，全部采用 Tap 标准格式，开箱即用。</p>
-            <div class="project-list">
+<!-- ═══ Contact ═══ -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label" data-i18n="contact.label">联系</div>
+      <h2 class="section-title" data-i18n="contact.title">找到我们</h2>
+      <p class="section-desc" data-i18n="contact.desc">
+        对技能有想法、建议或合作意向？欢迎联系
+      </p>
+    </div>
+    <div class="contact-grid">
+      <a href="mailto:jove.rina@outlook.com" class="contact-link reveal">
+        📧 jove.rina@outlook.com
+      </a>
+      <a href="https://github.com/jove-rina" target="_blank" class="contact-link reveal">
+        🐙 GitHub · jove-rina
+      </a>
+      <a href="https://github.com/jove-rina/jove-hermes-skills/discussions" target="_blank" class="contact-link reveal">
+        💡 <span data-i18n="contact.discuss">社区讨论</span>
+      </a>
+    </div>
+  </div>
+</section>
 
-                <a href="projects/jove-hermes-skills/" class="project-card">
-                    <div class="project-icon">🧩</div>
-                    <div class="project-info">
-                        <h3>jove-hermes-skills <span class="arrow">→</span></h3>
-                        <p>Hermes Agent 社区技能集。包含实用工具、创意生成、自动化工作流等高质量技能，按 Tap 标准格式组织，可一键安装使用。</p>
-                        <div class="project-meta">
-                            <span class="meta-item">Hermes Agent</span>
-                            <span class="meta-item">Skills · Taps</span>
-                            <span class="meta-item">社区驱动</span>
-                        </div>
-                    </div>
-                </a>
+<!-- ═══ Footer ═══ -->
+<footer class="footer">
+  <p>Jove Rina © 2026 &nbsp;·&nbsp; <span class="heart">♥</span></p>
+</footer>
 
+<script>
+/* ═══════════════════════════════════════
+   PARTICLE CANVAS
+   ═══════════════════════════════════════ */
+const canvas = document.getElementById('canvas-bg');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], mouse = {x:0,y:0};
 
+function resize(){
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+}
+window.addEventListener('resize',resize); resize();
 
-            </div>
-        </div>
-    </section>
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;
+    this.y=Math.random()*H;
+    this.size=Math.random()*2+1;
+    this.speedX=(Math.random()-.5)*.5;
+    this.speedY=(Math.random()-.5)*.5;
+    this.opacity=Math.random()*.5+.1;
+    this.hue=250+Math.random()*60;
+  }
+  update(){
+    this.x+=this.speedX;
+    this.y+=this.speedY;
+    const dx=mouse.x-this.x, dy=mouse.y-this.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<150){
+      const force=(150-dist)/150*.3;
+      this.x-=dx/dist*force;
+      this.y-=dy/dist*force;
+    }
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${this.hue},70%,70%,${this.opacity})`;
+    ctx.fill();
+  }
+}
 
-    <!-- ── Contact ── -->
-    <section class="section" id="contact">
-        <div class="container">
-            <h2 class="section-title"><span class="icon">💬</span> 联系</h2>
-            <p class="section-desc">对技能有想法、建议或合作意向？欢迎通过以下方式找到我们。</p>
-            <div class="contact-links">
-                <a href="mailto:jove.rina@outlook.com" class="contact-link" target="_blank" rel="noopener">
-                    📧 jove.rina@outlook.com
-                </a>
-                <a href="https://github.com/jove-rina" class="contact-link" target="_blank" rel="noopener">
-                    🐙 GitHub · jove-rina
-                </a>
-                <a href="https://github.com/jove-rina/jove-hermes-skills/discussions" class="contact-link" target="_blank" rel="noopener">
-                    💡 社区讨论
-                </a>
-            </div>
-        </div>
-    </section>
+for(let i=0;i<120;i++)particles.push(new Particle());
 
-    <!-- ── Footer ── -->
-    <footer class="footer">
-        <div class="container">
-            <p>
-                Jove Rina © 2026
-            </p>
-        </div>
-    </footer>
+function drawLines(){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<180){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`hsla(260,60%,70%,${.06*(1-dist/180)})`;
+        ctx.lineWidth=.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
 
+function animateParticles(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw()});
+  drawLines();
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+document.addEventListener('touchmove',e=>{
+  const t=e.touches[0];
+  mouse.x=t.clientX;mouse.y=t.clientY;
+},{passive:true});
+
+/* ═══════════════════════════════════════
+   TYPING EFFECT
+   ═══════════════════════════════════════ */
+const typingEl=document.getElementById('typing');
+const phrases_zh=['为 Agent 打造更好的工具','让 AI 技能开箱即用','创意 · 技术 · 开源'];
+const phrases_en=['Better tools for Agents','Skills that just work','Create · Code · Open Source'];
+let phraseIdx=0,charIdx=0,isDeleting=false;
+
+function typeEffect(){
+  const phrases=currentLang==='zh'?phrases_zh:phrases_en;
+  const current=phrases[phraseIdx];
+  if(isDeleting){
+    typingEl.textContent=current.substring(0,charIdx--);
+    if(charIdx<0){isDeleting=false;phraseIdx=(phraseIdx+1)%phrases.length;setTimeout(typeEffect,600);return}
+  }else{
+    typingEl.textContent=current.substring(0,charIdx++);
+    if(charIdx>current.length){isDeleting=true;setTimeout(typeEffect,1500);return}
+  }
+  setTimeout(typeEffect,isDeleting?50:80);
+}
+typeEffect();
+
+/* ═══════════════════════════════════════
+   NAV SCROLL HIDE
+   ═══════════════════════════════════════ */
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  const cur=window.scrollY;
+  const nav=document.getElementById('nav');
+  if(cur>lastScroll&&cur>100)nav.classList.add('hidden');
+  else nav.classList.remove('hidden');
+  lastScroll=cur;
+});
+
+/* ═══════════════════════════════════════
+   COUNTER ANIMATION
+   ═══════════════════════════════════════ */
+const counters=document.querySelectorAll('.stat-num[data-count]');
+let counted=false;
+
+function animateCounters(){
+  if(counted)return;
+  counted=true;
+  counters.forEach(el=>{
+    const target=parseInt(el.dataset.count);
+    let current=0;
+    const step=Math.ceil(target/30);
+    const interval=setInterval(()=>{
+      current+=step;
+      if(current>=target){current=target;clearInterval(interval)}
+      el.textContent=current;
+    },40);
+  });
+}
+
+/* ═══════════════════════════════════════
+   REVEAL ON SCROLL
+   ═══════════════════════════════════════ */
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      if(e.target.classList.contains('stat-num'))animateCounters();
+    }
+  });
+},{threshold:.15});
+
+document.querySelectorAll('.reveal,.project-card,.contact-link').forEach(el=>observer.observe(el));
+document.querySelectorAll('.stat-item').forEach(el=>observer.observe(el));
+
+/* ═══════════════════════════════════════
+   I18N
+   ═══════════════════════════════════════ */
+let currentLang='zh';
+
+const dict={
+  zh:{
+    'nav.projects':'项目',
+    'nav.contact':'联系',
+    'hero.badge':'开源 · Hermes Skills',
+    'hero.title1':'Build with',
+    'hero.title2':'Jove Rina',
+    'hero.sub':'Hermes Agent 社区技能开发 · 开源 · 创意与技术交汇',
+    'hero.cta1':'探索项目',
+    'hero.cta2':'GitHub 组织',
+    'hero.stat1':'Hermes Skill',
+    'hero.stat2':'公开仓库',
+    'hero.scroll':'向下滚动',
+    'projects.label':'项目',
+    'projects.title':'开源项目',
+    'projects.desc':'为 Hermes Agent 社区贡献的技能集，全部采用 Tap 标准格式',
+    'projects.card1.desc':'Hermes Agent 社区技能集。包含实用工具、自动化工作流，全部经过跨模型审查，开箱即用。',
+    'contact.label':'联系',
+    'contact.title':'找到我们',
+    'contact.desc':'对技能有想法、建议或合作意向？欢迎联系',
+    'contact.discuss':'社区讨论',
+  },
+  en:{
+    'nav.projects':'Projects',
+    'nav.contact':'Contact',
+    'hero.badge':'Open Source · Hermes Skills',
+    'hero.title1':'Build with',
+    'hero.title2':'Jove Rina',
+    'hero.sub':'Hermes Agent Skills · Open Source · Where code meets creativity',
+    'hero.cta1':'Explore Projects',
+    'hero.cta2':'GitHub Org',
+    'hero.stat1':'Hermes Skill',
+    'hero.stat2':'Public Repos',
+    'hero.scroll':'SCROLL',
+    'projects.label':'PROJECTS',
+    'projects.title':'Open Source',
+    'projects.desc':'Curated Hermes Agent skills, Tap‑formatted, cross‑model reviewed.',
+    'projects.card1.desc':'Hermes Agent skills collection — utilities, workflows, automation. Cross‑model reviewed, ready to use.',
+    'contact.label':'CONTACT',
+    'contact.title':'Get in Touch',
+    'contact.desc':'Got ideas, suggestions, or want to collaborate? Reach out.',
+    'contact.discuss':'Discussions',
+  }
+};
+
+function applyLang(lang){
+  currentLang=lang;
+  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(dict[lang]&&dict[lang][key])el.textContent=dict[lang][key];
+  });
+}
+
+document.getElementById('langBtn').addEventListener('click',()=>{
+  applyLang(currentLang==='zh'?'en':'zh');
+});
+
+applyLang('zh');
+
+/* ═══════════════════════════════════════
+   SMOOTH SCROLL FOR ANCHOR LINKS
+   ═══════════════════════════════════════ */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target)target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
 </body>
 </html>

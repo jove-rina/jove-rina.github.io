@@ -1,361 +1,561 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jove-hermes-skills — Hermes Agent 技能集</title>
-    <meta name="description" content="jove-hermes-skills: 一个精心打磨的 Hermes Agent 技能仓库，社区驱动，跨模型验证交付。" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #0a0a0f;
-            --surface: #12121a;
-            --surface2: #1a1a28;
-            --border: #2a2a3e;
-            --text: #e4e4ed;
-            --text-secondary: #9494a8;
-            --accent: #a78bfa;
-            --accent2: #6ee7b7;
-            --accent3: #f472b6;
-            --gradient: linear-gradient(135deg, #a78bfa, #6ee7b7);
-            --radius: 16px;
-            --radius-sm: 8px;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>jove-hermes-skills — Hermes Agent Skills</title>
+<meta name="description" content="jove-hermes-skills: curated Hermes Agent skills, cross-model reviewed." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #050510;
+  --bg2: #0a0a20;
+  --surface: rgba(18,18,34,.72);
+  --surface-border: rgba(167,139,250,.15);
+  --text: #eeeef8;
+  --text2: #8888bb;
+  --accent: #a78bfa;
+  --cyan: #22d3ee;
+  --pink: #e879f9;
+  --green: #6ee7b7;
+  --gradient-1: linear-gradient(135deg,#a78bfa,#22d3ee);
+  --gradient-2: linear-gradient(135deg,#22d3ee,#e879f9);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --font: 'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono: 'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+::selection{background:rgba(167,139,250,.35)}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+/* ── Canvas ── */
+#canvas-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-        body {
-            font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
+/* ── Nav ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  background:rgba(5,5,16,.6);
+  border-bottom:1px solid var(--surface-border);
+  padding:0 28px;
+}
+.nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.nav-back a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:4px;transition:color .3s;
+}
+.nav-back a:hover{color:var(--accent)}
+.nav-brand{
+  font-size:16px;font-weight:700;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-family:var(--mono);
+}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  position:relative;transition:color .3s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:var(--gradient-1);border-radius:2px;
+  transition:width .3s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.lang-btn{
+  padding:5px 14px;border-radius:100px;
+  background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.2);
+  color:var(--accent);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .3s;font-family:var(--font);
+}
+.lang-btn:hover{background:rgba(167,139,250,.2);border-color:var(--accent)}
 
-        .bg-grid {
-            position: fixed; inset: 0; pointer-events: none; z-index: 0;
-            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-            background-size: 60px 60px; opacity: 0.3;
-        }
-        .bg-glow {
-            position: fixed; top: -40vh; left: -20vw; width: 80vw; height: 80vh;
-            background: radial-gradient(circle, rgba(167,139,250,0.08) 0%, transparent 70%);
-            pointer-events: none; z-index: 0;
-        }
+/* ── Hero ── */
+.hero{
+  position:relative;z-index:1;
+  padding:120px 28px 72px;text-align:center;
+}
+.hero-inner{max-width:960px;margin:0 auto}
+.hero-icon{font-size:52px;margin-bottom:20px;display:inline-block;animation:float 4s ease-in-out infinite}
+.hero h1{
+  font-size:clamp(32px,5vw,56px);font-weight:900;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.5px;
+  margin-bottom:12px;
+}
+.hero-sub{font-size:16px;color:var(--text2);max-width:540px;margin:0 auto}
+.hero-badges{display:flex;justify-content:center;gap:10px;margin-top:24px;flex-wrap:wrap}
+.hero-badge{
+  padding:4px 14px;border-radius:100px;font-size:12px;font-weight:500;
+  background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15);color:var(--accent);
+}
+.hero-badge.green{background:rgba(110,231,183,.08);border-color:rgba(110,231,183,.15);color:var(--green)}
+.hero-badge.pink{background:rgba(232,121,249,.08);border-color:rgba(232,121,249,.15);color:var(--pink)}
 
-        .container {
-            position: relative; z-index: 1;
-            max-width: 960px; margin: 0 auto; padding: 0 24px;
-        }
+.install-box{
+  max-width:680px;margin:36px auto 0;
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);text-align:left;
+  backdrop-filter:blur(12px);
+  transition:border-color .3s;
+}
+.install-box:hover{border-color:rgba(167,139,250,.3)}
+.install-header{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 20px;border-bottom:1px solid var(--surface-border);
+  font-size:12px;color:var(--text2);font-weight:600;
+}
+.install-body{
+  padding:16px 20px;
+  font-family:var(--mono);font-size:13px;line-height:2;
+  color:var(--text2);overflow-x:auto;
+}
+.install-body .comment{color:#6b7280}
+.install-body .cmd{color:var(--green)}
+.install-body .string{color:var(--pink)}
 
-        /* ── Nav ── */
-        .nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-            backdrop-filter: blur(12px);
-            background: rgba(10,10,15,0.8);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-        }
-        .nav-inner {
-            max-width: 960px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-            height: 56px;
-        }
-        .nav-brand {
-            font-weight: 700; font-size: 15px;
-            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .nav-links { display: flex; gap: 24px; }
-        .nav-links a {
-            color: var(--text-secondary); text-decoration: none; font-size: 13px; font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--text); }
-        .nav-back a {
-            color: var(--text-secondary); text-decoration: none; font-size: 13px;
-            display: flex; align-items: center; gap: 4px;
-            transition: color 0.2s;
-        }
-        .nav-back a:hover { color: var(--accent); }
+/* ── Section ── */
+.section{
+  position:relative;z-index:1;
+  padding:80px 28px;
+}
+.section-inner{max-width:960px;margin:0 auto}
+.section-header{margin-bottom:48px}
+.section-label{
+  font-size:12px;font-weight:600;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:var(--surface-border);max-width:60px;
+}
+.section-title{font-size:clamp(22px,3vw,32px);font-weight:800;margin-bottom:8px}
+.section-desc{color:var(--text2);font-size:14px;max-width:500px}
 
-        /* ── Hero ── */
-        .hero {
-            padding: 120px 0 64px; text-align: center;
-        }
-        .hero-icon { font-size: 48px; margin-bottom: 16px; }
-        .hero h1 {
-            font-size: 42px; font-weight: 700;
-            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .hero-sub {
-            font-size: 16px; color: var(--text-secondary); margin-top: 12px; max-width: 500px; margin-left: auto; margin-right: auto;
-        }
-        .hero-badges {
-            display: flex; justify-content: center; gap: 10px; margin-top: 24px; flex-wrap: wrap;
-        }
-        .hero-badge {
-            padding: 4px 14px; border-radius: 100px; font-size: 12px; font-weight: 500;
-            background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.2); color: var(--accent);
-        }
-        .hero-badge.green { background: rgba(110,231,183,0.1); border-color: rgba(110,231,183,0.2); color: var(--accent2); }
-        .hero-badge.pink { background: rgba(244,114,182,0.1); border-color: rgba(244,114,182,0.2); color: var(--accent3); }
+.skill-list{display:flex;flex-direction:column;gap:16px}
 
-        .install-box {
-            max-width: 680px; margin: 32px auto 0;
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
-            text-align: left;
-        }
-        .install-header {
-            display: flex; align-items: center; gap: 8px;
-            padding: 12px 16px; border-bottom: 1px solid var(--border);
-            font-size: 12px; color: var(--text-secondary); font-weight: 500;
-        }
-        .install-body {
-            padding: 16px;
-            font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8;
-            color: var(--text-secondary);
-            overflow-x: auto;
-        }
-        .install-body .comment { color: #6b7280; }
-        .install-body .cmd { color: var(--accent2); }
-        .install-body .string { color: var(--accent3); }
+/* ── Skill Card ── */
+.skill-card{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius);padding:28px 32px;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  opacity:0;transform:translateY(30px);
+}
+.skill-card.visible{opacity:1;transform:translateY(0)}
+.skill-card:hover{
+  border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(167,139,250,.1);
+}
+.skill-card-top{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+}
+.skill-card h3{
+  font-size:18px;font-weight:700;font-family:var(--mono);
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:inline-block;
+}
+.skill-card .version{
+  font-size:12px;color:var(--text2);
+  background:rgba(167,139,250,.08);
+  border:1px solid rgba(167,139,250,.12);
+  padding:2px 12px;border-radius:100px;white-space:nowrap;
+  font-family:var(--mono);
+}
+.skill-card p{font-size:14px;color:var(--text2);margin-top:8px;line-height:1.7}
+.skill-tags{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.skill-tag{
+  font-size:12px;padding:3px 12px;border-radius:100px;
+  background:rgba(167,139,250,.06);
+  border:1px solid rgba(167,139,250,.12);
+  color:var(--accent);
+}
+.skill-tag.green{background:rgba(110,231,183,.06);border-color:rgba(110,231,183,.12);color:var(--green)}
 
-        /* ── Section ── */
-        .section { padding: 64px 0; }
-        .section-title {
-            font-size: 24px; font-weight: 600; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .section-desc { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; max-width: 600px; }
+.skill-detail{margin-top:16px;padding-top:16px;border-top:1px solid var(--surface-border)}
+.skill-detail summary{
+  font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;
+  transition:color .3s;
+}
+.skill-detail summary:hover{color:var(--text)}
+.skill-detail-content{margin-top:16px;display:flex;flex-direction:column;gap:12px}
+.detail-row{display:flex;gap:16px;font-size:13px}
+.detail-label{
+  min-width:100px;color:var(--text2);flex-shrink:0;
+  font-weight:500;
+}
+.detail-value{color:var(--text)}
 
-        /* ── Skill Cards ── */
-        .skill-list { display: flex; flex-direction: column; gap: 16px; }
-        .skill-card {
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 24px 28px; text-decoration: none; color: inherit;
-            transition: border-color 0.2s;
-        }
-        .skill-card:hover { border-color: var(--accent); }
-        .skill-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-        .skill-card h3 { font-size: 16px; font-weight: 600; }
-        .skill-card .version {
-            font-size: 12px; color: var(--text-secondary);
-            background: var(--surface2); padding: 2px 10px; border-radius: 100px; white-space: nowrap;
-        }
-        .skill-card p { font-size: 14px; color: var(--text-secondary); margin-top: 6px; line-height: 1.6; }
-        .skill-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-        .skill-tag {
-            font-size: 12px; padding: 2px 10px; border-radius: 100px;
-            background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.15); color: var(--accent);
-        }
-        .skill-tag.green { background: rgba(110,231,183,0.08); border-color: rgba(110,231,183,0.15); color: var(--accent2); }
+/* ── Quality Grid ── */
+.quality-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.quality-card{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:24px;
+  backdrop-filter:blur(12px);
+  transition:all .4s;
+  opacity:0;transform:translateY(20px);
+}
+.quality-card.visible{opacity:1;transform:translateY(0)}
+.quality-card:hover{border-color:rgba(167,139,250,.25);transform:translateY(-2px)}
+.quality-card .num{
+  font-size:32px;font-weight:800;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.quality-card .label{font-size:14px;color:var(--text);margin-top:6px;font-weight:600}
+.quality-card .sub{font-size:12px;color:var(--text2);margin-top:6px;opacity:.7}
 
-        .skill-detail {
-            margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
-        }
-        .skill-detail summary {
-            font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer;
-        }
-        .skill-detail summary:hover { color: var(--text); }
-        .skill-detail-content {
-            margin-top: 12px; display: flex; flex-direction: column; gap: 10px;
-        }
-        .detail-row {
-            display: flex; gap: 12px; font-size: 13px;
-        }
-        .detail-label {
-            min-width: 90px; color: var(--text-secondary); flex-shrink: 0;
-        }
-        .detail-value { color: var(--text); }
+/* ── Footer ── */
+.footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--surface-border);
+  padding:40px 28px 56px;text-align:center;
+}
+.footer p{font-size:13px;color:var(--text2);opacity:.6}
+.footer a{color:var(--accent);text-decoration:none}
+.footer a:hover{text-decoration:underline}
 
-        /* ── Quality ── */
-        .quality-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-        }
-        .quality-card {
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
-            padding: 20px;
-        }
-        .quality-card .num {
-            font-size: 28px; font-weight: 700;
-            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .quality-card .label {
-            font-size: 13px; color: var(--text-secondary); margin-top: 4px;
-        }
-        .quality-card .sub {
-            font-size: 12px; color: var(--text-secondary); opacity: 0.6; margin-top: 8px;
-        }
+/* ── Animations ── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
-        /* ── Footer ── */
-        .footer {
-            border-top: 1px solid var(--border); padding: 32px 0 48px; text-align: center;
-        }
-        .footer p { font-size: 13px; color: var(--text-secondary); opacity: 0.6; }
-        .footer a { color: var(--accent); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .quality-grid { grid-template-columns: 1fr; }
-            .skill-card-top { flex-direction: column; }
-            .section { padding: 40px 0; }
-            .hero { padding: 100px 0 40px; }
-            .nav-links { display: none; }
-        }
-        @media (max-width: 480px) {
-            .container { padding: 0 16px; }
-            .hero h1 { font-size: 26px; }
-        }
-    </style>
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero{padding:100px 20px 48px}
+  .quality-grid{grid-template-columns:1fr}
+  .skill-card-top{flex-direction:column}
+  .skill-card{padding:22px 24px}
+  .section{padding:56px 20px}
+  .section-header{margin-bottom:32px}
+}
+@media(max-width:480px){
+  .hero h1{font-size:28px}
+  .detail-row{flex-direction:column;gap:4px}
+  .detail-label{min-width:auto}
+}
+</style>
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
+<canvas id="canvas-bg"></canvas>
 
 <!-- ─── Nav ─── -->
 <nav class="nav">
-    <div class="nav-inner">
-        <div class="nav-back">
-            <a href="/">← 首页</a>
-        </div>
-        <div class="nav-brand">jove-hermes-skills</div>
-        <div class="nav-links">
-            <a href="#skills">技能</a>
-            <a href="#quality">质量</a>
-            <a href="https://github.com/jove-rina/jove-hermes-skills">GitHub</a>
-        </div>
+  <div class="nav-inner">
+    <div class="nav-back">
+      <a href="/">← <span data-i18n="nav.home">首页</span></a>
     </div>
+    <div class="nav-brand">jove-hermes-skills</div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#skills" data-i18n="nav.skills">技能</a>
+        <a href="#quality" data-i18n="nav.quality">质量</a>
+        <a href="https://github.com/jove-rina/jove-hermes-skills">GitHub</a>
+      </div>
+      <button class="lang-btn" id="langBtn">
+        <span id="langLabel">EN</span>
+      </button>
+    </div>
+  </div>
 </nav>
 
 <!-- ─── Hero ─── -->
 <section class="hero">
-    <div class="container">
-        <div class="hero-icon">🧩</div>
-        <h1>jove-hermes-skills</h1>
-        <p class="hero-sub">一个精心打磨的 Hermes Agent 技能仓库 —— 社区驱动，跨模型验证，开箱即用。</p>
-        <div class="hero-badges">
-            <span class="hero-badge">🔧 Hermes Agent</span>
-            <span class="hero-badge green">📦 Tap 格式</span>
-            <span class="hero-badge pink">✓ 跨模型审查</span>
-        </div>
-        <div class="install-box">
-            <div class="install-header">⚡ 快速安装</div>
-            <div class="install-body">
-                <span class="comment"># 添加 tap 源</span><br />
-                hermes skills tap add <span class="cmd">jove-rina/jove-hermes-skills</span><br />
-                <br />
-                <span class="comment"># 安装技能</span><br />
-                hermes skills install <span class="string">jove-rina/jove-hermes-skills/hermes-windows-migration</span>
-            </div>
-        </div>
+  <div class="hero-inner">
+    <div class="hero-icon">🧩</div>
+    <h1>jove-hermes-skills</h1>
+    <p class="hero-sub" data-i18n="hero.sub">
+      精心打磨的 Hermes Agent 技能仓库 · 跨模型验证 · 开箱即用
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">🔧 Hermes Agent</span>
+      <span class="hero-badge green">📦 Tap Format</span>
+      <span class="hero-badge pink">✓ Cross‑Model Review</span>
     </div>
+    <div class="install-box">
+      <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
+      <div class="install-body">
+        <span class="comment"># <span data-i18n="install.step1">添加 tap 源</span></span><br />
+        hermes skills tap add <span class="cmd">jove-rina/jove-hermes-skills</span><br />
+        <br />
+        <span class="comment"># <span data-i18n="install.step2">安装技能</span></span><br />
+        hermes skills install <span class="string">jove-rina/jove-hermes-skills/hermes-windows-migration</span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ─── Skills ─── -->
 <section class="section" id="skills">
-    <div class="container">
-        <h2 class="section-title">📦 技能列表</h2>
-        <p class="section-desc">每个技能都经过多轮跨模型审查，确保生产级质量。</p>
-        <div class="skill-list">
-
-            <!-- hermes-windows-migration -->
-            <div class="skill-card">
-                <div class="skill-card-top">
-                    <div>
-                        <h3>hermes-windows-migration</h3>
-                        <p>将 Hermes Agent 数据从 C 盘迁移到自定义目录，解决磁盘空间不足问题。</p>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Windows</span>
-                            <span class="skill-tag green">PowerShell</span>
-                            <span class="skill-tag">数据迁移</span>
-                        </div>
-                    </div>
-                    <span class="version">v1.0.1</span>
-                </div>
-                <details class="skill-detail">
-                    <summary>查看详情</summary>
-                    <div class="skill-detail-content">
-                        <div class="detail-row">
-                            <span class="detail-label">中文触发</span>
-                            <span class="detail-value">"C 盘满了，怎么把 Hermes 数据移走？"</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">English Trigger</span>
-                            <span class="detail-value">"My C: drive is full, I need to relocate Hermes data"</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">提供方案</span>
-                            <span class="detail-value">自动脚本 · 手动操作 · 交给 Agent</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">核心特性</span>
-                            <span class="detail-value">零删除 · robocopy 增量复制 · 环境变量自动配置</span>
-                        </div>
-                    </div>
-                </details>
-            </div>
-
-            <!-- More skills placeholder -->
-            <div class="skill-card" style="opacity: 0.5; cursor: default;">
-                <div class="skill-card-top">
-                    <div>
-                        <h3>更多技能开发中…</h3>
-                        <p>更多实用技能正在设计和审查中，敬请期待。</p>
-                    </div>
-                    <span class="version">Coming Soon</span>
-                </div>
-            </div>
-
-        </div>
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="skills.label">技能</span></div>
+      <h2 class="section-title" data-i18n="skills.title">技能列表</h2>
+      <p class="section-desc" data-i18n="skills.desc">每个技能都经过多轮跨模型审查，确保生产级质量</p>
     </div>
+    <div class="skill-list">
+      <div class="skill-card reveal">
+        <div class="skill-card-top">
+          <div>
+            <h3>hermes-windows-migration</h3>
+            <p data-i18n="skills.card.desc">将 Hermes Agent 数据从 C 盘迁移到自定义目录，解决磁盘空间不足问题</p>
+            <div class="skill-tags">
+              <span class="skill-tag">Windows</span>
+              <span class="skill-tag green">PowerShell</span>
+              <span class="skill-tag">Migration</span>
+            </div>
+          </div>
+          <span class="version">v1.0.1</span>
+        </div>
+        <details class="skill-detail">
+          <summary data-i18n="skills.detail">查看详情</summary>
+          <div class="skill-detail-content">
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="skills.trigger_cn">中文触发</span>
+              <span class="detail-value">"C 盘满了，怎么把 Hermes 数据移走？"</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="skills.trigger_en">English Trigger</span>
+              <span class="detail-value">"My C: drive is full, I need to relocate Hermes data"</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="skills.approach">提供方案</span>
+              <span class="detail-value" data-i18n="skills.approach_val">自动脚本 · 手动操作 · 交给 Agent</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" data-i18n="skills.features">核心特性</span>
+              <span class="detail-value" data-i18n="skills.features_val">零删除 · robocopy 增量复制 · 环境变量自动配置</span>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="skill-card reveal" style="opacity:.45;cursor:default;">
+        <div class="skill-card-top">
+          <div>
+            <h3 data-i18n="skills.coming">更多技能</h3>
+            <p data-i18n="skills.coming_desc">更多实用技能正在设计和审查中</p>
+          </div>
+          <span class="version" data-i18n="skills.coming_tag">Coming Soon</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ─── Quality ─── -->
 <section class="section" id="quality">
-    <div class="container">
-        <h2 class="section-title">✅ 验证质量</h2>
-        <p class="section-desc">坚持跨模型、多轮次的审查流程，确保每个技能都值得信赖。</p>
-        <div class="quality-grid">
-            <div class="quality-card">
-                <div class="num">3</div>
-                <div class="label">审查模型</div>
-                <div class="sub">deepseek-v4-flash · DeepSeek Pro · kimi-k2.7-code</div>
-            </div>
-            <div class="quality-card">
-                <div class="num">8</div>
-                <div class="label">审查轮次</div>
-                <div class="sub">从文档一致性到边界条件全面覆盖</div>
-            </div>
-            <div class="quality-card">
-                <div class="num">34</div>
-                <div class="label">发现并修复的问题</div>
-                <div class="sub">死代码 · 模糊正则 · 运行时错误 · 版本同步</div>
-            </div>
-            <div class="quality-card">
-                <div class="num">CC0</div>
-                <div class="label">许可证</div>
-                <div class="sub">公有领域，随意使用、修改、分享</div>
-            </div>
-        </div>
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="quality.label">验证质量</span></div>
+      <h2 class="section-title" data-i18n="quality.title">验证质量</h2>
+      <p class="section-desc" data-i18n="quality.desc">跨模型、多轮次审查，确保每个技能都值得信赖</p>
     </div>
+    <div class="quality-grid">
+      <div class="quality-card reveal">
+        <div class="num">3</div>
+        <div class="label" data-i18n="quality.card1_label">审查模型</div>
+        <div class="sub">deepseek-v4-flash · DeepSeek Pro · kimi-k2.7-code</div>
+      </div>
+      <div class="quality-card reveal">
+        <div class="num">8</div>
+        <div class="label" data-i18n="quality.card2_label">审查轮次</div>
+        <div class="sub" data-i18n="quality.card2_sub">从文档一致性到边界条件全面覆盖</div>
+      </div>
+      <div class="quality-card reveal">
+        <div class="num">34</div>
+        <div class="label" data-i18n="quality.card3_label">发现并修复的问题</div>
+        <div class="sub" data-i18n="quality.card3_sub">死代码 · 模糊正则 · 运行时错误 · 版本同步</div>
+      </div>
+      <div class="quality-card reveal">
+        <div class="num">CC0</div>
+        <div class="label" data-i18n="quality.card4_label">许可证</div>
+        <div class="sub" data-i18n="quality.card4_sub">公有领域，随意使用、修改、分享</div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ─── Footer ─── -->
 <footer class="footer">
-    <div class="container">
-        <p>
-            <a href="https://github.com/jove-rina/jove-hermes-skills">GitHub 仓库</a>
-            &nbsp;·&nbsp;
-            <a href="/">Jove Rina</a>
-            &nbsp;·&nbsp; CC0 公有领域
-        </p>
-    </div>
+  <p>
+    <a href="/">Jove Rina</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/jove-rina/jove-hermes-skills">GitHub</a>
+    &nbsp;·&nbsp; CC0
+  </p>
 </footer>
 
+<script>
+/* Canvas Particles */
+const canvas=document.getElementById('canvas-bg');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[],mouse={x:0,y:0};
+
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;this.y=Math.random()*H;
+    this.size=Math.random()*2+1;
+    this.speedX=(Math.random()-.5)*.5;this.speedY=(Math.random()-.5)*.5;
+    this.opacity=Math.random()*.5+.1;
+    this.hue=250+Math.random()*60;
+  }
+  update(){
+    this.x+=this.speedX;this.y+=this.speedY;
+    const dx=mouse.x-this.x,dy=mouse.y-this.y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<150){const f=(150-dist)/150*.3;this.x-=dx/dist*f;this.y-=dy/dist*f}
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${this.hue},70%,70%,${this.opacity})`;
+    ctx.fill();
+  }
+}
+for(let i=0;i<80;i++)particles.push(new Particle());
+
+function drawLines(){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<180){
+        ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`hsla(260,60%,70%,${.06*(1-dist/180)})`;
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+  }
+}
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw()});
+  drawLines();requestAnimationFrame(animate);
+}
+animate();
+document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+document.addEventListener('touchmove',e=>{const t=e.touches[0];mouse.x=t.clientX;mouse.y=t.clientY},{passive:true});
+
+/* Reveal */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15});
+document.querySelectorAll('.reveal,.skill-card,.quality-card').forEach(el=>obs.observe(el));
+
+/* I18N */
+let currentLang='zh';
+const dict={
+  zh:{
+    'nav.home':'首页',
+    'nav.skills':'技能',
+    'nav.quality':'质量',
+    'hero.sub':'精心打磨的 Hermes Agent 技能仓库 · 跨模型验证 · 开箱即用',
+    'install.title':'快速安装',
+    'install.step1':'添加 tap 源',
+    'install.step2':'安装技能',
+    'skills.label':'技能',
+    'skills.title':'技能列表',
+    'skills.desc':'每个技能都经过多轮跨模型审查，确保生产级质量',
+    'skills.card.desc':'将 Hermes Agent 数据从 C 盘迁移到自定义目录，解决磁盘空间不足问题',
+    'skills.detail':'查看详情',
+    'skills.trigger_cn':'中文触发',
+    'skills.trigger_en':'English Trigger',
+    'skills.approach':'提供方案',
+    'skills.approach_val':'自动脚本 · 手动操作 · 交给 Agent',
+    'skills.features':'核心特性',
+    'skills.features_val':'零删除 · robocopy 增量复制 · 环境变量自动配置',
+    'skills.coming':'更多技能',
+    'skills.coming_desc':'更多实用技能正在设计和审查中',
+    'skills.coming_tag':'即将推出',
+    'quality.label':'验证质量',
+    'quality.title':'验证质量',
+    'quality.desc':'跨模型、多轮次审查，确保每个技能都值得信赖',
+    'quality.card1_label':'审查模型',
+    'quality.card2_label':'审查轮次',
+    'quality.card2_sub':'从文档一致性到边界条件全面覆盖',
+    'quality.card3_label':'发现并修复的问题',
+    'quality.card3_sub':'死代码 · 模糊正则 · 运行时错误 · 版本同步',
+    'quality.card4_label':'许可证',
+    'quality.card4_sub':'公有领域，随意使用、修改、分享',
+  },
+  en:{
+    'nav.home':'Home',
+    'nav.skills':'Skills',
+    'nav.quality':'Quality',
+    'hero.sub':'Curated Hermes Agent skills · Cross‑model reviewed · Ready to use',
+    'install.title':'Quick Install',
+    'install.step1':'Add the tap source',
+    'install.step2':'Install the skill',
+    'skills.label':'SKILLS',
+    'skills.title':'Skills',
+    'skills.desc':'Every skill goes through multi‑model, multi‑round review for production quality',
+    'skills.card.desc':'Migrate Hermes Agent data from C: drive to a custom directory, freeing up disk space',
+    'skills.detail':'View details',
+    'skills.trigger_cn':'Chinese Trigger',
+    'skills.trigger_en':'English Trigger',
+    'skills.approach':'Approach',
+    'skills.approach_val':'Automated Script · Manual Steps · Let Agent Handle It',
+    'skills.features':'Key Features',
+    'skills.features_val':'Zero deletion · robocopy incremental · Auto env-var setup',
+    'skills.coming':'More Coming',
+    'skills.coming_desc':'More skills in design and review',
+    'skills.coming_tag':'Coming Soon',
+    'quality.label':'QUALITY',
+    'quality.title':'Quality Assurance',
+    'quality.desc':'Multi‑model, multi‑round review earns your trust',
+    'quality.card1_label':'Models Used',
+    'quality.card2_label':'Review Rounds',
+    'quality.card2_sub':'From doc consistency to edge cases, fully covered',
+    'quality.card3_label':'Issues Found & Fixed',
+    'quality.card3_sub':'Dead code · Fuzzy regex · Runtime errors · Version sync',
+    'quality.card4_label':'License',
+    'quality.card4_sub':'Public domain — use, modify, share freely',
+  }
+};
+
+function applyLang(lang){
+  currentLang=lang;
+  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(dict[lang]&&dict[lang][key])el.textContent=dict[lang][key];
+  });
+}
+document.getElementById('langBtn').addEventListener('click',()=>{applyLang(currentLang==='zh'?'en':'zh')});
+applyLang('zh');
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
 </body>
 </html>
