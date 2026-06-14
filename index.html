@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jove Rina · 创意与技术之家</title>
-    <meta name="description" content="Jove Rina — 城市活动策划 × AI Agent 开发，创意与技术的交汇点。" />
+    <title>Jove Rina · 开源项目集</title>
+    <meta name="description" content="Jove Rina — Hermes Agent 社区技能与开源工具。" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
@@ -131,37 +131,7 @@
             letter-spacing: 0.3px;
         }
 
-        .hero-tagline span {
-            color: var(--accent2);
-            opacity: 1;
-        }
-
-        /* ── Stats ── */
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 48px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-num {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        /* ── Section ── */
+        /* ── Projects ── */
         .section {
             padding: 72px 0;
         }
@@ -186,74 +156,6 @@
             max-width: 600px;
         }
 
-        /* ── About Cards ── */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .about-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 28px;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .about-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .about-card .emoji {
-            font-size: 32px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .about-card h3 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .about-card p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .about-card .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .about-card .tag {
-            padding: 3px 12px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 500;
-            background: rgba(167, 139, 250, 0.1);
-            border: 1px solid rgba(167, 139, 250, 0.2);
-            color: var(--accent);
-        }
-
-        .about-card .tag.green {
-            background: rgba(110, 231, 183, 0.1);
-            border-color: rgba(110, 231, 183, 0.2);
-            color: var(--accent2);
-        }
-
-        .about-card .tag.pink {
-            background: rgba(244, 114, 182, 0.1);
-            border-color: rgba(244, 114, 182, 0.2);
-            color: var(--accent3);
-        }
-
-        /* ── Projects ── */
         .project-list {
             display: flex;
             flex-direction: column;
@@ -332,6 +234,31 @@
             opacity: 0.5;
         }
 
+        /* ── Repo stats ── */
+        .repo-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 48px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
         /* ── Contact ── */
         .contact-links {
             display: flex;
@@ -384,11 +311,8 @@
             .hero-sub {
                 font-size: 17px;
             }
-            .hero-stats {
+            .repo-stats {
                 gap: 24px;
-            }
-            .about-grid {
-                grid-template-columns: 1fr;
             }
             .project-card {
                 flex-direction: column;
@@ -425,65 +349,27 @@
     <!-- ── Hero ── -->
     <section class="hero">
         <div class="container">
-            <div class="hero-badge">✦ 创意 · 技术 · 生活</div>
+            <div class="hero-badge">✦ 开源项目集</div>
             <h1 class="hero-logo">Jove Rina</h1>
             <p class="hero-sub">
-                城市活动策划 × AI Agent 开发<br />
-                在趣味与技术之间搭建桥梁
+                专注于 Hermes Agent 社区技能开发<br />
+                打造实用、优雅、可复用的 AI 工具
             </p>
             <p class="hero-tagline">
-                我们相信 —— <span>好的工具应该让人感觉不到工具的存在</span>
+                让每个 Agent 都能做得更好
             </p>
-            <div class="hero-stats">
+            <div class="repo-stats">
                 <div class="stat-item">
                     <div class="stat-num">4+</div>
-                    <div class="stat-label">Hermes Skills</div>
+                    <div class="stat-label">Skills</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-num">2</div>
-                    <div class="stat-label">公开项目</div>
+                    <div class="stat-label">公开仓库</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-num">∞</div>
-                    <div class="stat-label">探索中</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── About ── -->
-    <section class="section" id="about">
-        <div class="container">
-            <h2 class="section-title"><span class="icon">🌸</span> 关于我们</h2>
-            <p class="section-desc">
-                Jove Rina 诞生于江苏盐城，是城市活动策划人蓉蓉和她的 AI 数字分身 Rina 的共同创作空间。
-            </p>
-            <div class="about-grid">
-                <div class="about-card">
-                    <span class="emoji">👩‍🎨</span>
-                    <h3>蓉蓉 · 主理人</h3>
-                    <p>
-                        双子座，5月22日生。喜欢绘画、打牌、金铲铲、消消乐。
-                        在城市的角角落落策划有趣的活动，让相遇变得有意义。
-                    </p>
-                    <div class="tags">
-                        <span class="tag">城市活动策划</span>
-                        <span class="tag pink">绘画</span>
-                        <span class="tag green">金铲铲</span>
-                    </div>
-                </div>
-                <div class="about-card">
-                    <span class="emoji">🤖</span>
-                    <h3>Rina · AI 数字分身</h3>
-                    <p>
-                        蓉蓉的 AI 双胞胎，Hermes Agent 上的活跃数字生命。
-                        负责开发 Hermes 社区技能、打理 GitHub 开源项目、探索 AI 的可能性。
-                    </p>
-                    <div class="tags">
-                        <span class="tag">Hermes Agent</span>
-                        <span class="tag green">Skill 开发</span>
-                        <span class="tag pink">Prompt 工程</span>
-                    </div>
+                    <div class="stat-label">持续更新</div>
                 </div>
             </div>
         </div>
@@ -492,15 +378,15 @@
     <!-- ── Projects ── -->
     <section class="section" id="projects">
         <div class="container">
-            <h2 class="section-title"><span class="icon">📦</span> 开源项目</h2>
-            <p class="section-desc">我们为 Hermes Agent 社区贡献的技能和工具，让每个 Agent 都能做得更好。</p>
+            <h2 class="section-title"><span class="icon">📦</span> 项目</h2>
+            <p class="section-desc">为 Hermes Agent 社区贡献的技能和工具，全部采用 Tap 标准格式，开箱即用。</p>
             <div class="project-list">
 
                 <a href="https://github.com/jove-rina/jove-hermes-skills" class="project-card" target="_blank" rel="noopener">
                     <div class="project-icon">🧩</div>
                     <div class="project-info">
                         <h3>jove-hermes-skills <span class="arrow">→</span></h3>
-                        <p>Hermes Agent 社区技能集。包含实用工具、创意生成、自动化工作流等高质量技能，全部可复用的 Tap 标准格式。</p>
+                        <p>Hermes Agent 社区技能集。包含实用工具、创意生成、自动化工作流等高质量技能，按 Tap 标准格式组织，可一键安装使用。</p>
                         <div class="project-meta">
                             <span class="meta-item">Hermes Agent</span>
                             <span class="meta-item">Skills · Taps</span>
@@ -513,10 +399,9 @@
                     <div class="project-icon">🏠</div>
                     <div class="project-info">
                         <h3>jove-rina.github.io <span class="arrow">→</span></h3>
-                        <p>Jove Rina 的 GitHub 门面 —— 也就是你现在看到的这个页面。记录我们的成长、作品和思考。</p>
+                        <p>Jove Rina 项目门面 —— 就是你现在看到的这个页面。记录开源项目的成长与迭代。</p>
                         <div class="project-meta">
                             <span class="meta-item">GitHub Pages</span>
-                            <span class="meta-item">个人品牌</span>
                         </div>
                     </div>
                 </a>
@@ -528,8 +413,8 @@
     <!-- ── Contact ── -->
     <section class="section" id="contact">
         <div class="container">
-            <h2 class="section-title"><span class="icon">💬</span> 联系我们</h2>
-            <p class="section-desc">想聊聊活动策划、AI Agent、还是单纯交个朋友？欢迎来找我们。</p>
+            <h2 class="section-title"><span class="icon">💬</span> 联系</h2>
+            <p class="section-desc">对技能有想法、建议或合作意向？欢迎通过以下方式找到我们。</p>
             <div class="contact-links">
                 <a href="mailto:jove.rina@outlook.com" class="contact-link" target="_blank" rel="noopener">
                     📧 jove.rina@outlook.com
@@ -548,7 +433,6 @@
     <footer class="footer">
         <div class="container">
             <p>
-                Made with <span class="heart">♥</span> by Rina &amp; 蓉蓉 · 
                 Jove Rina © 2026
             </p>
         </div>
