@@ -255,6 +255,66 @@ body{
 }
 
 /* ═══════════════════════════════════════
+   ABOUT / MISSION
+   ═══════════════════════════════════════ */
+.about-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.about-card{
+  background:var(--surface);
+  border:1px solid var(--surface-border);
+  border-radius:var(--radius);
+  padding:32px;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  opacity:0;transform:translateY(30px);
+}
+.about-card.visible{opacity:1;transform:translateY(0)}
+.about-card:hover{
+  border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(167,139,250,.08);
+}
+.about-card .icon{font-size:36px;margin-bottom:14px;display:block}
+.about-card h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.about-card p{font-size:14px;color:var(--text2);line-height:1.7}
+.about-card .accent-text{
+  font-size:13px;color:var(--accent);font-weight:500;margin-top:12px;
+}
+
+/* ═══════════════════════════════════════
+   FOCUS / CORE CAPABILITIES
+   ═══════════════════════════════════════ */
+.focus-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+}
+.focus-item{
+  background:var(--surface);
+  border:1px solid var(--surface-border);
+  border-radius:var(--radius);
+  padding:28px 24px;
+  text-align:center;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(30px);
+}
+.focus-item.visible{opacity:1;transform:translateY(0)}
+.focus-item::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--gradient-1);opacity:0;
+  transition:opacity .4s;
+}
+.focus-item:hover::before{opacity:1}
+.focus-item:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(167,139,250,.1);
+}
+.focus-item .icon{font-size:32px;margin-bottom:12px;display:block}
+.focus-item h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.focus-item p{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ═══════════════════════════════════════
    PROJECT CARDS
    ═══════════════════════════════════════ */
 .projects-grid{
@@ -388,12 +448,15 @@ body{
   .stat-num{font-size:28px}
   .project-card{flex-direction:column;padding:22px 24px}
   .project-icon{width:44px;height:44px;font-size:20px}
+  .focus-grid{grid-template-columns:1fr 1fr}
   .section{padding:72px 20px}
   .section-header{margin-bottom:40px}
 }
 @media(max-width:480px){
   .hero-cta{flex-direction:column}
   .btn-primary,.btn-secondary{justify-content:center}
+  .focus-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -408,6 +471,7 @@ body{
     <a href="/" class="nav-brand">Jove Rina</a>
     <div class="nav-right">
       <div class="nav-links">
+        <a href="#about" data-i18n="nav.about">关于</a>
         <a href="#projects" data-i18n="nav.projects">项目</a>
         <a href="#contact" data-i18n="nav.contact">联系</a>
         <a href="https://github.com/jove-rina" target="_blank">GitHub</a>
@@ -456,6 +520,67 @@ body{
   <div class="scroll-ind">
     <span data-i18n="hero.scroll">SCROLL</span>
     <div class="mouse"></div>
+  </div>
+</section>
+
+<!-- ═══ About ═══ -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label" data-i18n="about.label">关于</div>
+      <h2 class="section-title" data-i18n="about.title">Jove Rina</h2>
+      <p class="section-desc" data-i18n="about.desc">
+        专注于 Hermes Agent 社区技能开发，开源、高质量、社区驱动
+      </p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card reveal">
+        <span class="icon">🎯</span>
+        <h3 data-i18n="about.card1.title">使命</h3>
+        <p data-i18n="about.card1.desc">
+          让每个 Hermes Agent 都能获得高质量、开箱即用的技能。
+          我们相信好的工具应该让人感觉不到工具的存在。
+        </p>
+        <div class="accent-text" data-i18n="about.card1.tag">Skill First</div>
+      </div>
+      <div class="about-card reveal">
+        <span class="icon">🔬</span>
+        <h3 data-i18n="about.card2.title">质量标准</h3>
+        <p data-i18n="about.card2.desc">
+          每个技能都经过多轮跨模型审查 —— 从文档一致性到边界条件，
+          不放过任何细节，确保生产级交付质量。
+        </p>
+        <div class="accent-text" data-i18n="about.card2.tag">Cross‑Model Review</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Focus ═══ -->
+<section class="section" id="focus">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label" data-i18n="focus.label">核心</div>
+      <h2 class="section-title" data-i18n="focus.title">核心能力</h2>
+      <p class="section-desc" data-i18n="focus.desc">三大支柱，打造值得信赖的 Hermes 技能生态</p>
+    </div>
+    <div class="focus-grid">
+      <div class="focus-item reveal">
+        <span class="icon">🧩</span>
+        <h3 data-i18n="focus.item1.title">Hermes Skills</h3>
+        <p data-i18n="focus.item1.desc">开发高质量、可复用的 Hermes Agent 技能，严格遵循 Tap 标准格式</p>
+      </div>
+      <div class="focus-item reveal">
+        <span class="icon">✅</span>
+        <h3 data-i18n="focus.item2.title">跨模型验证</h3>
+        <p data-i18n="focus.item2.desc">每个技能经过 3+ 模型、多轮审查，从代码到文档全面保障质量</p>
+      </div>
+      <div class="focus-item reveal">
+        <span class="icon">🌐</span>
+        <h3 data-i18n="focus.item3.title">开源社区</h3>
+        <p data-i18n="focus.item3.desc">CC0 公有领域许可，自由使用、修改、分享，推动社区共同进步</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -667,7 +792,7 @@ const observer=new IntersectionObserver(entries=>{
   });
 },{threshold:.15});
 
-document.querySelectorAll('.reveal,.project-card,.contact-link').forEach(el=>observer.observe(el));
+document.querySelectorAll('.reveal,.project-card,.contact-link,.about-card,.focus-item').forEach(el=>observer.observe(el));
 document.querySelectorAll('.stat-item').forEach(el=>observer.observe(el));
 
 /* ═══════════════════════════════════════
@@ -679,6 +804,7 @@ const dict={
   zh:{
     'nav.projects':'项目',
     'nav.contact':'联系',
+    'nav.about':'关于',
     'hero.badge':'开源 · Hermes Skills',
     'hero.title1':'Build with',
     'hero.title2':'Jove Rina',
@@ -688,6 +814,24 @@ const dict={
     'hero.stat1':'Hermes Skill',
     'hero.stat2':'公开仓库',
     'hero.scroll':'向下滚动',
+    'about.label':'关于',
+    'about.title':'Jove Rina',
+    'about.desc':'专注于 Hermes Agent 社区技能开发，开源、高质量、社区驱动',
+    'about.card1.title':'使命',
+    'about.card1.desc':'让每个 Hermes Agent 都能获得高质量、开箱即用的技能。我们相信好的工具应该让人感觉不到工具的存在。',
+    'about.card1.tag':'Skill First',
+    'about.card2.title':'质量标准',
+    'about.card2.desc':'每个技能都经过多轮跨模型审查 —— 从文档一致性到边界条件，不放过任何细节，确保生产级交付质量。',
+    'about.card2.tag':'Cross‑Model Review',
+    'focus.label':'核心',
+    'focus.title':'核心能力',
+    'focus.desc':'三大支柱，打造值得信赖的 Hermes 技能生态',
+    'focus.item1.title':'Hermes Skills',
+    'focus.item1.desc':'开发高质量、可复用的 Hermes Agent 技能，严格遵循 Tap 标准格式',
+    'focus.item2.title':'跨模型验证',
+    'focus.item2.desc':'每个技能经过 3+ 模型、多轮审查，从代码到文档全面保障质量',
+    'focus.item3.title':'开源社区',
+    'focus.item3.desc':'CC0 公有领域许可，自由使用、修改、分享，推动社区共同进步',
     'projects.label':'项目',
     'projects.title':'开源项目',
     'projects.desc':'为 Hermes Agent 社区贡献的技能集，全部采用 Tap 标准格式',
@@ -700,6 +844,7 @@ const dict={
   en:{
     'nav.projects':'Projects',
     'nav.contact':'Contact',
+    'nav.about':'About',
     'hero.badge':'Open Source · Hermes Skills',
     'hero.title1':'Build with',
     'hero.title2':'Jove Rina',
@@ -709,6 +854,24 @@ const dict={
     'hero.stat1':'Hermes Skill',
     'hero.stat2':'Public Repos',
     'hero.scroll':'SCROLL',
+    'about.label':'ABOUT',
+    'about.title':'Jove Rina',
+    'about.desc':'Building quality Hermes Agent skills — open source, community‑driven, rigorously reviewed.',
+    'about.card1.title':'Mission',
+    'about.card1.desc':'Empower every Hermes Agent with quality, ready‑to‑use skills. Good tools should feel invisible.',
+    'about.card1.tag':'Skill First',
+    'about.card2.title':'Quality',
+    'about.card2.desc':'Every skill goes through multi‑model, multi‑round review — from doc consistency to edge cases. No shortcuts.',
+    'about.card2.tag':'Cross‑Model Review',
+    'focus.label':'FOCUS',
+    'focus.title':'Core Capabilities',
+    'focus.desc':'Three pillars powering a trustworthy Hermes skill ecosystem',
+    'focus.item1.title':'Hermes Skills',
+    'focus.item1.desc':'Building high‑quality, reusable Hermes Agent skills in strict Tap format',
+    'focus.item2.title':'Cross‑Model QA',
+    'focus.item2.desc':'Every skill reviewed by 3+ models, multi‑round — code and docs, fully covered',
+    'focus.item3.title':'Open Source',
+    'focus.item3.desc':'CC0 public domain — use, modify, share freely. Community progress for all',
     'projects.label':'PROJECTS',
     'projects.title':'Open Source',
     'projects.desc':'Curated Hermes Agent skills, Tap‑formatted, cross‑model reviewed.',
