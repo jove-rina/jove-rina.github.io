@@ -88,16 +88,18 @@ body{
 .nav-links a:hover{color:var(--text)}
 .nav-links a:hover::after{width:100%}
 
-.lang-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:5px 14px;border-radius:100px;
+.lang-select{
+  padding:5px 10px;border-radius:100px;
   background:rgba(167,139,250,.1);
   border:1px solid rgba(167,139,250,.2);
   color:var(--accent);font-size:12px;font-weight:600;
-  cursor:pointer;transition:all .3s;
-  font-family:var(--font);
+  cursor:pointer;transition:all .3s;font-family:var(--font);
+  outline:none;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a78bfa'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;
 }
-.lang-btn:hover{background:rgba(167,139,250,.2);border-color:var(--accent)}
+.lang-select:hover{background:rgba(167,139,250,.2);border-color:var(--accent)}
+.lang-select option{background:#1a1a2e;color:#eeeef8}
 
 /* ═══════════════════════════════════════
    HERO
@@ -476,9 +478,10 @@ body{
         <a href="#contact" data-i18n="nav.contact">联系</a>
         <a href="https://github.com/jove-rina" target="_blank">GitHub</a>
       </div>
-      <button class="lang-btn" id="langBtn">
-        <span id="langLabel">EN</span>
-      </button>
+      <select class="lang-select" id="langSelect">
+        <option value="en">EN</option>
+        <option value="zh">中</option>
+      </select>
     </div>
   </div>
 </nav>
@@ -659,7 +662,8 @@ const ctx = canvas.getContext('2d');
 let W, H, particles = [], mouse = {x:0,y:0};
 
 /* i18n — must be before any function that uses currentLang */
-let currentLang='zh';
+function getSavedLang(){return localStorage.getItem('jove-lang')||'en'}
+let currentLang=getSavedLang();
 const dict={
   zh:{
     'nav.projects':'项目','nav.contact':'联系','nav.about':'关于',
@@ -730,8 +734,9 @@ const dict={
 };
 function applyLang(lang){
   currentLang=lang;
+  localStorage.setItem('jove-lang',lang);
   document.documentElement.lang=lang==='zh'?'zh-CN':'en';
-  document.getElementById('langLabel').textContent=lang==='zh'?'EN':'中';
+  document.getElementById('langSelect').value=lang;
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key=el.dataset.i18n;
     if(dict[lang]&&dict[lang][key])el.textContent=dict[lang][key];
@@ -856,11 +861,11 @@ const observer=new IntersectionObserver(entries=>{
 
 document.querySelectorAll('.reveal,.project-card,.contact-link,.about-card,.focus-item').forEach(el=>observer.observe(el));
 
-document.getElementById('langBtn').addEventListener('click',()=>{
-  applyLang(currentLang==='zh'?'en':'zh');
+document.getElementById('langSelect').addEventListener('change',function(){
+  applyLang(this.value);
 });
 
-applyLang('zh');
+applyLang(getSavedLang());
 
 /* ═══════════════════════════════════════
    SMOOTH SCROLL FOR ANCHOR LINKS
