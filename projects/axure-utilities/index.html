@@ -271,15 +271,8 @@ body{
     <div class="install-box">
       <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
       <div class="install-body">
-        <span class="comment"># <span data-i18n="install.download">下载预编译包（推荐）</span></span><br />
-        <span data-i18n="install.download2">从 </span><a href="https://github.com/jove-rina/lanhu-axure-extractor-ext/releases/tag/v2.0.0" target="_blank" style="color:var(--cyan)">GitHub Releases</a><span data-i18n="install.download3"> 下载 zip → 解压 → chrome://extensions → 加载 dist</span><br />
-        <br />
-        <span class="comment"># <span data-i18n="install.step1">克隆仓库自行构建</span></span><br />
-        git clone <span class="cmd">https://github.com/jove-rina/lanhu-axure-extractor-ext</span><br />
-        pnpm install &amp;&amp; pnpm run build<br />
-        <br />
-        <span class="comment"># <span data-i18n="install.step3">加载扩展</span></span><br />
-        <span data-i18n="install.step4">chrome://extensions → 开发者模式 → 加载已解压的扩展 → 选择 dist 目录</span>
+        <span class="comment"># <span data-i18n="install.download">从 GitHub Releases 下载预编译包</span></span><br />
+        <span data-i18n="install.download2">前往 </span><a href="https://github.com/jove-rina/lanhu-axure-extractor-ext/releases/tag/v2.0.0" target="_blank" style="color:var(--cyan)">GitHub Releases v2.0.0</a><span data-i18n="install.download3"> → 下载 zip → 解压 → chrome://extensions → 开发者模式 → 加载已解压的扩展 → 选择 dist 目录</span>
       </div>
     </div>
   </div>
@@ -389,19 +382,17 @@ body{
         <div class="desc" style="line-height:1.8">
           <strong data-i18n="install.detail.prereq">前置条件</strong><br />
           <span data-i18n="install.detail.prereq1">• 浏览器：Chrome 或 Edge</span><br />
-          <span data-i18n="install.detail.prereq2">• 站点：蓝湖 Axure 页面（lanhuapp.com）</span><br />
-          <span data-i18n="install.detail.prereq3">• pnpm（包管理）</span>
+          <span data-i18n="install.detail.prereq2">• 站点：蓝湖 Axure 页面（lanhuapp.com）</span>
         </div>
       </div>
       <div class="workflow-step">
         <span class="num">2</span>
         <div class="desc" style="line-height:1.8">
-          <strong data-i18n="install.detail.dev.title">开发者模式安装</strong><br />
-          <span data-i18n="install.detail.dev.step1">① 克隆仓库：git clone https://github.com/jove-rina/lanhu-axure-extractor-ext.git</span><br />
-          <span data-i18n="install.detail.dev.step2">② 安装依赖并构建：pnpm install && pnpm run build</span><br />
-          <span data-i18n="install.detail.dev.step3">③ 打开 chrome://extensions 或 edge://extensions</span><br />
-          <span data-i18n="install.detail.dev.step4">④ 开启「开发者模式」→「加载已解压的扩展」，选择 dist 目录</span><br />
-          <span data-i18n="install.detail.dev.step5">⑤ 开发时运行 pnpm run dev，重新加载扩展后刷新蓝湖页面即可调试</span>
+          <strong data-i18n="install.detail.dev.title">安装步骤</strong><br />
+          <span data-i18n="install.detail.dev.step1">① 前往 </span><a href="https://github.com/jove-rina/lanhu-axure-extractor-ext/releases/tag/v2.0.0" target="_blank" style="color:var(--cyan)">GitHub Releases v2.0.0</a><span data-i18n="install.detail.dev.step2"> 下载 lanhu-axure-extractor-ext-v2.0.0.zip</span><br />
+          <span data-i18n="install.detail.dev.step3">② 解压 zip 文件</span><br />
+          <span data-i18n="install.detail.dev.step4">③ 打开 chrome://extensions 或 edge://extensions</span><br />
+          <span data-i18n="install.detail.dev.step5">④ 开启「开发者模式」→「加载已解压的扩展」，选择解压后的 dist 目录</span>
         </div>
       </div>
       <div class="workflow-step">
@@ -527,13 +518,9 @@ const dict={
     'nav.install':'安装',
     'hero.sub':'从蓝湖 Axure 原型中框选提取内容，组装为结构化 Markdown 文档',
     'install.title':'快速安装',
-    'install.step1':'克隆仓库自行构建',
-    'install.step2':'安装依赖并构建',
-    'install.step3':'加载扩展',
-    'install.step4':'chrome://extensions → 开发者模式 → 加载已解压的扩展 → 选择 dist 目录',
-    'install.download':'下载预编译包（推荐）',
-    'install.download2':'从 ',
-    'install.download3':' 下载 zip → 解压 → chrome://extensions → 加载 dist',
+    'install.download':'从 GitHub Releases 下载预编译包',
+    'install.download2':'前往 ',
+    'install.download3':' → 下载 zip → 解压 → chrome://extensions → 开发者模式 → 加载已解压的扩展 → 选择 dist 目录',
     'features.label':'功能',
     'features.title':'核心能力',
     'features.desc':'内容提取 · 文档构建 · 编辑增强 · 导出 · 按页保存 · 深色UI',
@@ -562,20 +549,19 @@ const dict={
     'workflow.step3':'预览确认 → 下载 Markdown 文件 → 直接用于文档、Wiki 或 AI 工具',
     'install.detail.label':'安装',
     'install.detail.title':'安装说明',
-    'install.detail.desc':'开发者模式安装或商店待上架',
+    'install.detail.desc':'两步完成，无需编译',
     'install.detail.prereq':'前置条件',
     'install.detail.prereq1':'• 浏览器：Chrome 或 Edge',
     'install.detail.prereq2':'• 站点：蓝湖 Axure 页面（lanhuapp.com）',
-    'install.detail.prereq3':'• pnpm（包管理）',
-    'install.detail.dev.title':'开发者模式安装',
-    'install.detail.dev.step1':'① 克隆仓库：git clone https://github.com/jove-rina/lanhu-axure-extractor-ext.git',
-    'install.detail.dev.step2':'② 安装依赖并构建：pnpm install && pnpm run build',
-    'install.detail.dev.step3':'③ 打开 chrome://extensions 或 edge://extensions',
-    'install.detail.dev.step4':'④ 开启「开发者模式」→「加载已解压的扩展」，选择 dist 目录',
-    'install.detail.dev.step5':'⑤ 开发时运行 pnpm run dev，重新加载扩展后刷新蓝湖页面即可调试',
-    'install.detail.pack.title':'打包发布（可选）',
-    'install.detail.pack.desc':'或：pnpm run build && node scripts/pack.mjs',
-    'install.detail.pack.out':'输出 dist/lanhu-axure-extractor-ext-v{version}.zip',
+    'install.detail.dev.title':'安装步骤',
+    'install.detail.dev.step1':'① 前往 ',
+    'install.detail.dev.step2':' 下载 lanhu-axure-extractor-ext-v2.0.0.zip',
+    'install.detail.dev.step3':'② 解压 zip 文件',
+    'install.detail.dev.step4':'③ 打开 chrome://extensions 或 edge://extensions',
+    'install.detail.dev.step5':'④ 开启「开发者模式」→「加载已解压的扩展」，选择解压后的 dist 目录',
+    'install.detail.pack.title':'从源码构建（可选）',
+    'install.detail.pack.desc':'如需自行构建：pnpm install && pnpm run build',
+    'install.detail.pack.out':'或 node scripts/pack.mjs 打包为 zip',
     'install.detail.icons.title':'更新扩展图标',
     'install.detail.icons.desc':'源文件 public/icons/icon.svg，修改后运行：pnpm run icons',
     'install.detail.icons.gen':'生成 icon16/48/128.png，然后 pnpm run build 并重新加载扩展',
@@ -589,13 +575,9 @@ const dict={
     'nav.install':'Install',
     'hero.sub':'Drag-select content from Axure prototypes on lanhuapp.com to build structured Markdown documents',
     'install.title':'Quick Install',
-    'install.step1':'Clone & build from source',
-    'install.step2':'Install & build',
-    'install.step3':'Load extension',
-    'install.step4':'chrome://extensions → Developer mode → Load unpacked → select dist/ folder',
-    'install.download':'Download prebuilt (recommended)',
-    'install.download2':'',
-    'install.download3':' from GitHub Releases → unzip → load dist/ in chrome://extensions',
+    'install.download':'Download prebuilt from GitHub Releases',
+    'install.download2':'Go to ',
+    'install.download3':' → download zip → unzip → chrome://extensions → Developer mode → Load unpacked → select dist/',
     'features.label':'FEATURES',
     'features.title':'Core Capabilities',
     'features.desc':'Extraction · Doc Building · Editing · Export · Persistence · Dark UI',
@@ -624,20 +606,19 @@ const dict={
     'workflow.step3':'Preview → download Markdown file → use in docs, wikis, or AI tools',
     'install.detail.label':'INSTALL',
     'install.detail.title':'Installation',
-    'install.detail.desc':'Developer mode or store (pending)',
+    'install.detail.desc':'Two steps, no build required',
     'install.detail.prereq':'Prerequisites',
     'install.detail.prereq1':'• Browser: Chrome or Edge',
     'install.detail.prereq2':'• Site: Lanhu Axure pages (lanhuapp.com)',
-    'install.detail.prereq3':'• pnpm (package manager)',
-    'install.detail.dev.title':'Developer Mode Installation',
-    'install.detail.dev.step1':'① Clone: git clone https://github.com/jove-rina/lanhu-axure-extractor-ext.git',
-    'install.detail.dev.step2':'② Install & build: pnpm install && pnpm run build',
-    'install.detail.dev.step3':'③ Open chrome://extensions or edge://extensions',
-    'install.detail.dev.step4':'④ Enable Developer mode → Load unpacked → select dist/ folder',
-    'install.detail.dev.step5':'⑤ For dev: pnpm run dev, reload extension, then refresh Lanhu page',
-    'install.detail.pack.title':'Package for Release (optional)',
-    'install.detail.pack.desc':'Or: pnpm run build && node scripts/pack.mjs',
-    'install.detail.pack.out':'Output: dist/lanhu-axure-extractor-ext-v{version}.zip',
+    'install.detail.dev.title':'Install Steps',
+    'install.detail.dev.step1':'① Go to ',
+    'install.detail.dev.step2':' download lanhu-axure-extractor-ext-v2.0.0.zip',
+    'install.detail.dev.step3':'② Unzip the file',
+    'install.detail.dev.step4':'③ Open chrome://extensions or edge://extensions',
+    'install.detail.dev.step5':'④ Enable Developer mode → Load unpacked → select the dist/ folder',
+    'install.detail.pack.title':'Build from source (optional)',
+    'install.detail.pack.desc':'To build yourself: pnpm install && pnpm run build',
+    'install.detail.pack.out':'Or run node scripts/pack.mjs to create a zip',
     'install.detail.icons.title':'Update Extension Icons',
     'install.detail.icons.desc':'Source: public/icons/icon.svg. After editing, run: pnpm run icons',
     'install.detail.icons.gen':'Generates icon16/48/128.png, then pnpm run build and reload extension',
@@ -653,7 +634,7 @@ function applyLang(lang){
   document.getElementById('langSelect').value=lang;
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key=el.dataset.i18n;
-    if(dict[lang]&&dict[lang][key])el.textContent=dict[lang][key];
+    if(dict[lang]&&dict[lang][key])el.innerHTML=dict[lang][key];
   });
 }
 applyLang(getSavedLang());
