@@ -244,7 +244,7 @@ body{
       <div class="nav-links">
         <a href="#features" data-i18n="nav.features">功能</a>
         <a href="#install" data-i18n="nav.install">安装</a>
-        <a href="#repo">GitHub</a>
+        <a href="https://github.com/jove-rina/lanhu-axure-extractor-ext" target="_blank">GitHub</a>
       </div>
       <select class="lang-select" id="langSelect">
         <option value="en">EN</option>
@@ -266,18 +266,20 @@ body{
       <span class="hero-badge">🔧 Chrome Extension</span>
       <span class="hero-badge green">📦 Manifest V3</span>
       <span class="hero-badge pink">⚡ Vite + TypeScript</span>
+      <span class="hero-badge" style="background:rgba(240,180,0,.1);border-color:rgba(240,180,0,.2);color:#f0b400;">🏷️ v2.0.0</span>
     </div>
     <div class="install-box">
       <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
       <div class="install-body">
-        <span class="comment"># <span data-i18n="install.step1">克隆仓库</span></span><br />
-        git clone <span class="cmd">https://github.com/jove-rina/lanhu-axure-extractor-ext</span><br />
+        <span class="comment"># <span data-i18n="install.download">下载预编译包（推荐）</span></span><br />
+        <span data-i18n="install.download2">从 </span><a href="https://github.com/jove-rina/lanhu-axure-extractor-ext/releases/tag/v2.0.0" target="_blank" style="color:var(--cyan)">GitHub Releases</a><span data-i18n="install.download3"> 下载 zip → 解压 → chrome://extensions → 加载 dist</span><br />
         <br />
-        <span class="comment"># <span data-i18n="install.step2">安装依赖并构建</span></span><br />
+        <span class="comment"># <span data-i18n="install.step1">克隆仓库自行构建</span></span><br />
+        git clone <span class="cmd">https://github.com/jove-rina/lanhu-axure-extractor-ext</span><br />
         pnpm install &amp;&amp; pnpm run build<br />
         <br />
         <span class="comment"># <span data-i18n="install.step3">加载扩展</span></span><br />
-        <span data-i18n="install.step4">chrome://extensions → 开发者模式 → 加载 dist 目录</span>
+        <span data-i18n="install.step4">chrome://extensions → 开发者模式 → 加载已解压的扩展 → 选择 dist 目录</span>
       </div>
     </div>
   </div>
@@ -525,10 +527,13 @@ const dict={
     'nav.install':'安装',
     'hero.sub':'从蓝湖 Axure 原型中框选提取内容，组装为结构化 Markdown 文档',
     'install.title':'快速安装',
-    'install.step1':'克隆仓库',
+    'install.step1':'克隆仓库自行构建',
     'install.step2':'安装依赖并构建',
     'install.step3':'加载扩展',
-    'install.step4':'chrome://extensions → 开发者模式 → 加载 dist 目录',
+    'install.step4':'chrome://extensions → 开发者模式 → 加载已解压的扩展 → 选择 dist 目录',
+    'install.download':'下载预编译包（推荐）',
+    'install.download2':'从 ',
+    'install.download3':' 下载 zip → 解压 → chrome://extensions → 加载 dist',
     'features.label':'功能',
     'features.title':'核心能力',
     'features.desc':'内容提取 · 文档构建 · 编辑增强 · 导出 · 按页保存 · 深色UI',
@@ -584,10 +589,13 @@ const dict={
     'nav.install':'Install',
     'hero.sub':'Drag-select content from Axure prototypes on lanhuapp.com to build structured Markdown documents',
     'install.title':'Quick Install',
-    'install.step1':'Clone the repo',
+    'install.step1':'Clone & build from source',
     'install.step2':'Install & build',
     'install.step3':'Load extension',
-    'install.step4':'chrome://extensions → Developer mode → Load unpacked → select dist/',
+    'install.step4':'chrome://extensions → Developer mode → Load unpacked → select dist/ folder',
+    'install.download':'Download prebuilt (recommended)',
+    'install.download2':'',
+    'install.download3':' from GitHub Releases → unzip → load dist/ in chrome://extensions',
     'features.label':'FEATURES',
     'features.title':'Core Capabilities',
     'features.desc':'Extraction · Doc Building · Editing · Export · Persistence · Dark UI',
