@@ -391,23 +391,6 @@ body{
           <span data-i18n="install.detail.dev.step5">④ 开启「开发者模式」→「加载已解压的扩展」，选择解压后的 dist 目录</span>
         </div>
       </div>
-      <div class="workflow-step">
-        <span class="num">3</span>
-        <div class="desc" style="line-height:1.8">
-          <strong data-i18n="install.detail.pack.title">打包发布（可选）</strong><br />
-          <code>pnpm run pack</code>
-          <span data-i18n="install.detail.pack.desc">或：pnpm run build && node scripts/pack.mjs</span><br />
-          <span data-i18n="install.detail.pack.out">输出 dist/lanhu-axure-extractor-ext-v{version}.zip</span>
-        </div>
-      </div>
-      <div class="workflow-step">
-        <span class="num">4</span>
-        <div class="desc" style="line-height:1.8">
-          <strong data-i18n="install.detail.icons.title">更新扩展图标</strong><br />
-          <span data-i18n="install.detail.icons.desc">源文件 public/icons/icon.svg，修改后运行：pnpm run icons</span><br />
-          <span data-i18n="install.detail.icons.gen">生成 icon16/48/128.png，然后 pnpm run build 并重新加载扩展</span>
-        </div>
-      </div>
       <div class="workflow-step" style="border-bottom:none">
         <span class="num">🏪</span>
         <div class="desc" style="line-height:1.8">
@@ -554,12 +537,6 @@ const dict={
     'install.detail.dev.step3':'② 解压 zip 文件',
     'install.detail.dev.step4':'③ 打开 chrome://extensions 或 edge://extensions',
     'install.detail.dev.step5':'④ 开启「开发者模式」→「加载已解压的扩展」，选择解压后的 dist 目录',
-    'install.detail.pack.title':'从源码构建（可选）',
-    'install.detail.pack.desc':'如需自行构建：pnpm install && pnpm run build',
-    'install.detail.pack.out':'或 node scripts/pack.mjs 打包为 zip',
-    'install.detail.icons.title':'更新扩展图标',
-    'install.detail.icons.desc':'源文件 public/icons/icon.svg，修改后运行：pnpm run icons',
-    'install.detail.icons.gen':'生成 icon16/48/128.png，然后 pnpm run build 并重新加载扩展',
     'install.detail.store.title':'商店安装',
     'install.detail.store.desc':'Chrome Web Store / Edge Add-ons 上架筹备中',
     'repo.label':'源代码',
@@ -610,12 +587,6 @@ const dict={
     'install.detail.dev.step3':'② Unzip the file',
     'install.detail.dev.step4':'③ Open chrome://extensions or edge://extensions',
     'install.detail.dev.step5':'④ Enable Developer mode → Load unpacked → select the dist/ folder',
-    'install.detail.pack.title':'Build from source (optional)',
-    'install.detail.pack.desc':'To build yourself: pnpm install && pnpm run build',
-    'install.detail.pack.out':'Or run node scripts/pack.mjs to create a zip',
-    'install.detail.icons.title':'Update Extension Icons',
-    'install.detail.icons.desc':'Source: public/icons/icon.svg. After editing, run: pnpm run icons',
-    'install.detail.icons.gen':'Generates icon16/48/128.png, then pnpm run build and reload extension',
     'install.detail.store.title':'Store Install',
     'install.detail.store.desc':'Chrome Web Store / Edge Add-ons listing in progress',
     'repo.label':'Source Code',
