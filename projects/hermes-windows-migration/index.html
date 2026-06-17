@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Windows Migration — Hermes Agent Skill</title>
+<meta name="description" content="Migrate Hermes Agent data from C: drive to any custom directory — zero deletion, incremental copy, auto env-var setup." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #050510;
+  --bg2: #0a0a20;
+  --surface: rgba(18,18,34,.72);
+  --surface-border: rgba(167,139,250,.15);
+  --text: #eeeef8;
+  --text2: #8888bb;
+  --accent: #a78bfa;
+  --cyan: #22d3ee;
+  --pink: #e879f9;
+  --green: #6ee7b7;
+  --orange: #fbbf24;
+  --gradient-1: linear-gradient(135deg,#a78bfa,#22d3ee);
+  --gradient-2: linear-gradient(135deg,#22d3ee,#e879f9);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --font: 'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono: 'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+::selection{background:rgba(167,139,250,.35)}
+
+/* ── Canvas ── */
+#canvas-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── Nav ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  background:rgba(5,5,16,.6);
+  border-bottom:1px solid var(--surface-border);
+  padding:0 28px;
+}
+.nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.nav-back a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:4px;transition:color .3s;
+}
+.nav-back a:hover{color:var(--accent)}
+.nav-brand{
+  font-size:16px;font-weight:700;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-family:var(--mono);
+}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  position:relative;transition:color .3s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:var(--gradient-1);border-radius:2px;
+  transition:width .3s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.lang-select{
+  padding:5px 10px;border-radius:100px;
+  background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.2);
+  color:var(--accent);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .3s;font-family:var(--font);
+  outline:none;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a78bfa'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;
+}
+.lang-select:hover{background:rgba(167,139,250,.2);border-color:var(--accent)}
+.lang-select option{background:#1a1a2e;color:#eeeef8}
+
+/* ── Hero ── */
+.hero{
+  position:relative;z-index:1;
+  padding:120px 28px 72px;text-align:center;
+}
+.hero-inner{max-width:960px;margin:0 auto}
+.hero-icon{font-size:52px;margin-bottom:20px;display:inline-block;animation:float 4s ease-in-out infinite}
+.hero h1{
+  font-size:clamp(32px,5vw,56px);font-weight:900;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.5px;
+  margin-bottom:12px;
+}
+.hero-sub{font-size:16px;color:var(--text2);max-width:540px;margin:0 auto}
+.hero-badges{display:flex;justify-content:center;gap:10px;margin-top:24px;flex-wrap:wrap}
+.hero-badge{
+  padding:4px 14px;border-radius:100px;font-size:12px;font-weight:500;
+  background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15);color:var(--accent);
+}
+.hero-badge.green{background:rgba(110,231,183,.08);border-color:rgba(110,231,183,.15);color:var(--green)}
+.hero-badge.pink{background:rgba(232,121,249,.08);border-color:rgba(232,121,249,.15);color:var(--pink)}
+.hero-badge.orange{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.15);color:var(--orange)}
+
+.install-box{
+  max-width:680px;margin:36px auto 0;
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);text-align:left;
+  backdrop-filter:blur(12px);
+  transition:border-color .3s;
+}
+.install-box:hover{border-color:rgba(167,139,250,.3)}
+.install-header{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 20px;border-bottom:1px solid var(--surface-border);
+  font-size:12px;color:var(--text2);font-weight:600;
+}
+.install-body{
+  padding:16px 20px;
+  font-family:var(--mono);font-size:13px;line-height:2;
+  color:var(--text2);overflow-x:auto;
+}
+.install-body .comment{color:#6b7280}
+.install-body .cmd{color:var(--green)}
+.install-body .string{color:var(--pink)}
+
+/* ── Section ── */
+.section{
+  position:relative;z-index:1;
+  padding:80px 28px;
+}
+.section-inner{max-width:960px;margin:0 auto}
+.section-header{margin-bottom:48px}
+.section-label{
+  font-size:12px;font-weight:600;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:var(--surface-border);max-width:60px;
+}
+.section-title{font-size:clamp(22px,3vw,32px);font-weight:800;margin-bottom:8px}
+.section-desc{color:var(--text2);font-size:14px;max-width:500px}
+
+/* ── Focus Item Grid (3-column) ── */
+.focus-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+}
+.focus-item{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:24px;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  opacity:0;transform:translateY(30px);
+}
+.focus-item.visible{opacity:1;transform:translateY(0)}
+.focus-item:hover{
+  border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(167,139,250,.1);
+}
+.focus-item .icon{font-size:28px;margin-bottom:8px}
+.focus-item h4{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.focus-item p{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* ── Product Section ── */
+.product-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+}
+.product-card{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius);padding:28px 32px;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  opacity:0;transform:translateY(30px);
+}
+.product-card.visible{opacity:1;transform:translateY(0)}
+.product-card:hover{
+  border-color:rgba(167,139,250,.25);
+  transform:translateY(-2px);
+}
+.product-card .card-label{
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.product-card .card-label.problem{color:var(--pink)}
+.product-card .card-label.solution{color:var(--green)}
+.product-card h3{font-size:18px;font-weight:700;margin-bottom:10px}
+.product-card p{font-size:14px;color:var(--text2);line-height:1.8}
+
+/* ── Workflow ── */
+.workflow-list{display:flex;flex-direction:column;gap:12px}
+.workflow-step{
+  display:flex;align-items:flex-start;gap:16px;
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:18px 24px;
+  backdrop-filter:blur(12px);
+  transition:all .4s;
+  opacity:0;transform:translateX(-20px);
+}
+.workflow-step.visible{opacity:1;transform:translateX(0)}
+.workflow-step:hover{border-color:rgba(167,139,250,.2);transform:translateX(3px)}
+.workflow-step .step-num{
+  flex-shrink:0;width:32px;height:32px;border-radius:50%;
+  background:var(--gradient-1);display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:var(--bg);font-family:var(--mono);
+}
+.workflow-step .step-body{flex:1}
+.workflow-step .step-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.workflow-step .step-desc{font-size:12px;color:var(--text2);line-height:1.7}
+.workflow-step .step-code{
+  margin-top:8px;padding:8px 12px;background:rgba(0,0,0,.3);
+  border-radius:6px;font-family:var(--mono);font-size:12px;
+  color:var(--green);overflow-x:auto;white-space:nowrap;
+}
+
+/* ── Review Table ── */
+.qa-table-wrap{
+  overflow-x:auto;
+  border-radius:var(--radius-sm);
+  border:1px solid var(--surface-border);
+  background:var(--surface);backdrop-filter:blur(12px);
+  opacity:0;transform:translateY(20px);
+  transition:all .5s;
+}
+.qa-table-wrap.visible{opacity:1;transform:translateY(0)}
+.qa-table{
+  width:100%;border-collapse:collapse;
+  font-size:13px;min-width:480px;
+}
+.qa-table thead{
+  background:rgba(167,139,250,.08);
+  border-bottom:1px solid var(--surface-border);
+}
+.qa-table th{
+  padding:12px 18px;text-align:left;
+  font-weight:600;color:var(--accent);font-size:12px;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.qa-table td{
+  padding:12px 18px;border-bottom:1px solid var(--surface-border);
+  color:var(--text2);
+}
+.qa-table tr:last-child td{border-bottom:none}
+.qa-table tr:hover td{color:var(--text);background:rgba(167,139,250,.03)}
+.qa-table .check{color:var(--green)}
+.qa-table .round-final td{font-weight:600;color:var(--accent);background:rgba(167,139,250,.04)}
+
+/* ── Stats ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin-bottom:36px;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:20px;
+  backdrop-filter:blur(12px);text-align:center;
+  transition:all .4s;
+  opacity:0;transform:translateY(20px);
+}
+.stat-card.visible{opacity:1;transform:translateY(0)}
+.stat-card:hover{border-color:rgba(167,139,250,.2);transform:translateY(-2px)}
+.stat-card .num{
+  font-size:36px;font-weight:800;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1.2;
+}
+.stat-card .label{font-size:13px;color:var(--text2);margin-top:4px}
+.stat-card .sub{font-size:11px;color:var(--text2);opacity:.6;margin-top:2px}
+
+/* ── Footer ── */
+.footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--surface-border);
+  padding:40px 28px 56px;text-align:center;
+}
+.footer p{font-size:13px;color:var(--text2);opacity:.6}
+.footer a{color:var(--accent);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+
+/* ── Animations ── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero{padding:100px 20px 48px}
+  .focus-grid{grid-template-columns:1fr}
+  .product-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr}
+  .section{padding:56px 20px}
+  .section-header{margin-bottom:32px}
+}
+@media(max-width:480px){
+  .hero h1{font-size:28px}
+  .workflow-step{flex-direction:column;gap:10px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- ─── Nav ─── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-back">
+      <a href="/">← <span data-i18n="nav.home">首页</span></a>
+    </div>
+    <div class="nav-brand">Jove Rina</div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#features" data-i18n="nav.features">特性</a>
+        <a href="#workflow" data-i18n="nav.workflow">流程</a>
+        <a href="#qa" data-i18n="nav.qa">审查</a>
+        <a href="https://github.com/jove-rina/jove-hermes-skills">GitHub</a>
+      </div>
+      <select class="lang-select" id="langSelect">
+        <option value="en">EN</option>
+        <option value="zh">中</option>
+      </select>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-icon">💾</div>
+    <h1 data-i18n="hero.title">Windows Migration</h1>
+    <p class="hero-sub" data-i18n="hero.sub">
+      Migrate Hermes Agent data from C: drive to any custom directory — zero deletion, incremental copy, auto env-var setup.
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">🏷️ v1.0.1</span>
+      <span class="hero-badge green">🔧 Hermes Agent</span>
+      <span class="hero-badge orange">🪟 Windows Only</span>
+    </div>
+    <div class="install-box">
+      <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
+      <div class="install-body">
+        <span class="comment"># <span data-i18n="install.step1">安装技能</span></span><br />
+        hermes skills tap add jove-rina/jove-hermes-skills<br />
+        <br />
+        <span class="comment"># <span data-i18n="install.step2">安装迁移技能</span></span><br />
+        hermes skills install jove-rina/jove-hermes-skills/hermes-windows-migration<br />
+        <br />
+        <span class="comment"># <span data-i18n="install.step3">加载并执行</span></span><br />
+        <span class="cmd">/skill hermes-windows-migration</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features ─── -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="features.label">特性</span></div>
+      <h2 class="section-title" data-i18n="features.title">核心特性</h2>
+      <p class="section-desc" data-i18n="features.desc">六大特性让 Windows 迁移安全、高效、零风险</p>
+    </div>
+    <div class="focus-grid">
+      <div class="focus-item reveal">
+        <div class="icon">🗂️</div>
+        <h4 data-i18n="features.card1.title">Zero Deletion</h4>
+        <p data-i18n="features.card1.desc">Copies only, never deletes original data. Safe to try — rollback is instant.</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">📦</div>
+        <h4 data-i18n="features.card2.title">Incremental Copy</h4>
+        <p data-i18n="features.card2.desc">Uses robocopy with multi-thread, resume support, ACL & file attributes preserved.</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">🎯</div>
+        <h4 data-i18n="features.card3.title">Auto-Detection</h4>
+        <p data-i18n="features.card3.desc">Smartly locates source by checking existing HERMES_HOME env var. No manual path guessing.</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">⚙️</div>
+        <h4 data-i18n="features.card4.title">Auto Env-Var Setup</h4>
+        <p data-i18n="features.card4.desc">Sets user-level HERMES_HOME environment variable. No admin or PowerShell expertise needed.</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">✅</div>
+        <h4 data-i18n="features.card5.title">Verification Checklist</h4>
+        <p data-i18n="features.card5.desc">Post-migration output shows step-by-step verification: paths, env var, data integrity.</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">🪟</div>
+        <h4 data-i18n="features.card6.title">Windows Only</h4>
+        <p data-i18n="features.card6.desc">Designed for Windows native install. Not for WSL2, Linux, or macOS.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Product ─── -->
+<section class="section" id="product">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="product.label">方案</span></div>
+      <h2 class="section-title" data-i18n="product.title">问题 vs 解决方案</h2>
+      <p class="section-desc" data-i18n="product.desc">C: 盘空间不足？手动迁移风险高。这个技能自动化了整个流程。</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card reveal">
+        <div class="card-label problem">✕ <span data-i18n="product.problem_label">问题</span></div>
+        <h3 data-i18n="product.problem_title">C: 盘空间逐渐被占满</h3>
+        <p data-i18n="product.problem_desc">Hermes 默认将数据存储在 C:\Users\&lt;user&gt;\AppData\Local\hermes。随着使用时间推移，日志、缓存和配置数据可能占用数 GB 空间，逐渐填满 C: 盘。手动迁移需要修改环境变量、复制文件、确保路径正确——任何一步出错都可能导致数据丢失或 Hermes 无法启动，且需要了解 PowerShell 管理权限操作。</p>
+      </div>
+      <div class="product-card reveal">
+        <div class="card-label solution">✓ <span data-i18n="product.solution_label">解决方案</span></div>
+        <h3 data-i18n="product.solution_title">全自动迁移 — 零数据丢失</h3>
+        <p data-i18n="product.solution_desc">此 Hermes Agent 技能提供全自动迁移方案：使用 robocopy 进行快速增量传输，零数据丢失；自动检测现有 HERMES_HOME 设置；自动配置用户级 HERMES_HOME 环境变量。提供三种方式可选：一键自动化脚本、手动 PowerShell 步骤、或 AI 全引导迁移。无需管理员权限或 PowerShell 专业知识。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Workflow ─── -->
+<section class="section" id="workflow">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="workflow.label">流程</span></div>
+      <h2 class="section-title" data-i18n="workflow.title">快速上手</h2>
+      <p class="section-desc" data-i18n="workflow.desc">5 步完成从安装到验证</p>
+    </div>
+    <div class="workflow-list">
+      <div class="workflow-step reveal">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title" data-i18n="workflow.step1.title">安装技能</div>
+          <div class="step-desc" data-i18n="workflow.step1.desc">通过 hermes tap 添加 jove-rina 技能源并安装 windows-migration 技能</div>
+          <div class="step-code">hermes skills tap add jove-rina/jove-hermes-skills<br />hermes skills install jove-rina/jove-hermes-skills/hermes-windows-migration</div>
+        </div>
+      </div>
+      <div class="workflow-step reveal">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title" data-i18n="workflow.step2.title">在聊天中加载技能</div>
+          <div class="step-desc" data-i18n="workflow.step2.desc">使用 /skill 命令加载迁移技能，让 AI 了解你的环境</div>
+          <div class="step-code">/skill hermes-windows-migration</div>
+        </div>
+      </div>
+      <div class="workflow-step reveal">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title" data-i18n="workflow.step3.title">选择迁移方式</div>
+          <div class="step-desc" data-i18n="workflow.step3.desc">三种方式可选：自动化 (A)、手动 PowerShell (B)、或 AI 引导 (C)</div>
+          <div class="step-code">A - 一键全自动迁移<br />B - 手动 PowerShell 步骤<br />C - AI 全引导迁移</div>
+        </div>
+      </div>
+      <div class="workflow-step reveal">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title" data-i18n="workflow.step4.title">运行迁移</div>
+          <div class="step-desc" data-i18n="workflow.step4.desc">AI 代理会自动执行 robocopy 复制和 env var 配置，无需手动干预</div>
+          <div class="step-code"># AI handles all commands automatically</div>
+        </div>
+      </div>
+      <div class="workflow-step reveal">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title" data-i18n="workflow.step5.title">验证迁移结果</div>
+          <div class="step-desc" data-i18n="workflow.step5.desc">使用内置检查清单验证路径、环境变量和数据完整性</div>
+          <div class="step-code">✓ Source path verified<br />✓ Target path verified<br />✓ HERMES_HOME env var set<br />✓ Data integrity confirmed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── QA / Review History ─── -->
+<section class="section" id="qa">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="qa.label">审查</span></div>
+      <h2 class="section-title" data-i18n="qa.title">审查历史</h2>
+      <p class="section-desc" data-i18n="qa.desc">8 轮跨 3 个模型审查，34 个问题全部修复，确保生产级质量</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="num">1</div>
+        <div class="label" data-i18n="qa.stat1_label">技能数量</div>
+        <div class="sub" data-i18n="qa.stat1_sub">专属迁移技能</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num">8</div>
+        <div class="label" data-i18n="qa.stat2_label">审查轮次</div>
+        <div class="sub" data-i18n="qa.stat2_sub">跨模型全面覆盖</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num">34</div>
+        <div class="label" data-i18n="qa.stat3_label">修复项</div>
+        <div class="sub" data-i18n="qa.stat3_sub">死代码 · 边界条件 · 文档一致性</div>
+      </div>
+    </div>
+    <div class="qa-table-wrap reveal">
+      <table class="qa-table">
+        <thead>
+          <tr>
+            <th data-i18n="qa.th.round">轮次</th>
+            <th data-i18n="qa.th.model">模型</th>
+            <th data-i18n="qa.th.findings">问题</th>
+            <th data-i18n="qa.th.focus">重点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>deepseek-v4-flash</td>
+            <td>3</td>
+            <td>Doc consistency, placeholders</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>deepseek-v4-flash</td>
+            <td>1</td>
+            <td>Missing Bypass</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>DeepSeek Pro</td>
+            <td>2</td>
+            <td>Runtime errors, robocopy flags</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>DeepSeek Pro</td>
+            <td>2</td>
+            <td>Dead function removal, regex tightening</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>kimi-k2.7-code</td>
+            <td>8</td>
+            <td>Deep code review + edge cases</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>kimi-k2.7-code</td>
+            <td>5</td>
+            <td>Fresh perspective</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>deepseek-v4-flash</td>
+            <td>1</td>
+            <td>HERMES_HOME root validation</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>kimi-k2.7-code</td>
+            <td>14</td>
+            <td>Final read-through, version sync</td>
+          </tr>
+          <tr class="round-final">
+            <td>总计</td>
+            <td>3 个模型</td>
+            <td>34</td>
+            <td class="check">全部修复 ✅</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+  <p>
+    <span data-i18n="footer.copyright">Jove Rina © 2026 · ♥ ·</span>
+    &nbsp;
+    <a href="/">Jove Rina</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/jove-rina/jove-hermes-skills">GitHub</a>
+    &nbsp;·&nbsp; CC0 1.0 Universal
+  </p>
+</footer>
+
+<script>
+/* Canvas Particles */
+const canvas=document.getElementById('canvas-bg');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[],mouse={x:0,y:0};
+
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+window.addEventListener('resize',resize);resize();
+
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;this.y=Math.random()*H;
+    this.size=Math.random()*2+1;
+    this.speedX=(Math.random()-.5)*.5;this.speedY=(Math.random()-.5)*.5;
+    this.opacity=Math.random()*.5+.1;
+    this.hue=250+Math.random()*60;
+  }
+  update(){
+    this.x+=this.speedX;this.y+=this.speedY;
+    const dx=mouse.x-this.x,dy=mouse.y-this.y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<150){const f=(150-dist)/150*.3;this.x-=dx/dist*f;this.y-=dy/dist*f}
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${this.hue},70%,70%,${this.opacity})`;
+    ctx.fill();
+  }
+}
+for(let i=0;i<80;i++)particles.push(new Particle());
+
+function drawLines(){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<180){
+        ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`hsla(260,60%,70%,${.06*(1-dist/180)})`;
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+  }
+}
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw()});
+  drawLines();requestAnimationFrame(animate);
+}
+animate();
+document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+document.addEventListener('touchmove',e=>{const t=e.touches[0];mouse.x=t.clientX;mouse.y=t.clientY},{passive:true});
+
+/* Reveal */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15});
+document.querySelectorAll('.reveal,.focus-item,.product-card,.workflow-step,.stat-card,.qa-table-wrap').forEach(el=>obs.observe(el));
+
+/* I18N */
+function getSavedLang(){return localStorage.getItem('jove-lang')||'en'}
+let currentLang=getSavedLang();
+const dict={
+  zh:{
+    'nav.home':'首页',
+    'nav.features':'特性',
+    'nav.workflow':'流程',
+    'nav.qa':'审查',
+    'hero.title':'Windows 迁移',
+    'hero.sub':'将 Hermes Agent 数据从 C: 盘迁移到任意自定义目录 — 零删除、增量复制、自动环境变量配置。',
+    'install.title':'快速安装',
+    'install.step1':'安装技能',
+    'install.step2':'安装迁移技能',
+    'install.step3':'加载并执行',
+    'features.label':'特性',
+    'features.title':'核心特性',
+    'features.desc':'六大特性让 Windows 迁移安全、高效、零风险',
+    'features.card1.title':'零删除',
+    'features.card1.desc':'仅复制，绝不删除原始数据。安全可尝试 — 回滚立即可用。',
+    'features.card2.title':'增量复制',
+    'features.card2.desc':'使用 robocopy 多线程复制，支持断点续传，保留 ACL 和文件属性。',
+    'features.card3.title':'自动检测',
+    'features.card3.desc':'智能检测源路径：检查现有 HERMES_HOME 环境变量。无需手动猜测路径。',
+    'features.card4.title':'自动环境变量',
+    'features.card4.desc':'设置用户级 HERMES_HOME 环境变量。无需管理员权限或 PowerShell 专业知识。',
+    'features.card5.title':'验证清单',
+    'features.card5.desc':'迁移后输出逐步验证结果：路径、环境变量、数据完整性。',
+    'features.card6.title':'仅限 Windows',
+    'features.card6.desc':'专为 Windows 原生安装设计。不适用于 WSL2、Linux 或 macOS。',
+    'product.label':'方案',
+    'product.title':'问题 vs 解决方案',
+    'product.desc':'C: 盘空间不足？手动迁移风险高。这个技能自动化了整个流程。',
+    'product.problem_label':'问题',
+    'product.problem_title':'C: 盘空间逐渐被占满',
+    'product.problem_desc':'Hermes 默认将数据存储在 C:\\Users\\<user>\\AppData\\Local\\hermes。随着使用时间推移，日志、缓存和配置数据可能占用数 GB 空间，逐渐填满 C: 盘。手动迁移需要修改环境变量、复制文件、确保路径正确——任何一步出错都可能导致数据丢失或 Hermes 无法启动，且需要了解 PowerShell 管理权限操作。',
+    'product.solution_label':'解决方案',
+    'product.solution_title':'全自动迁移 — 零数据丢失',
+    'product.solution_desc':'此 Hermes Agent 技能提供全自动迁移方案：使用 robocopy 进行快速增量传输，零数据丢失；自动检测现有 HERMES_HOME 设置；自动配置用户级 HERMES_HOME 环境变量。提供三种方式可选：一键自动化脚本、手动 PowerShell 步骤、或 AI 全引导迁移。无需管理员权限或 PowerShell 专业知识。',
+    'workflow.label':'流程',
+    'workflow.title':'快速上手',
+    'workflow.desc':'5 步完成从安装到验证',
+    'workflow.step1.title':'安装技能',
+    'workflow.step1.desc':'通过 hermes tap 添加 jove-rina 技能源并安装 windows-migration 技能',
+    'workflow.step2.title':'在聊天中加载技能',
+    'workflow.step2.desc':'使用 /skill 命令加载迁移技能，让 AI 了解你的环境',
+    'workflow.step3.title':'选择迁移方式',
+    'workflow.step3.desc':'三种方式可选：自动化 (A)、手动 PowerShell (B)、或 AI 引导 (C)',
+    'workflow.step4.title':'运行迁移',
+    'workflow.step4.desc':'AI 代理会自动执行 robocopy 复制和 env var 配置，无需手动干预',
+    'workflow.step5.title':'验证迁移结果',
+    'workflow.step5.desc':'使用内置检查清单验证路径、环境变量和数据完整性',
+    'qa.label':'审查',
+    'qa.title':'审查历史',
+    'qa.desc':'8 轮跨 3 个模型审查，34 个问题全部修复，确保生产级质量',
+    'qa.stat1_label':'技能数量',
+    'qa.stat1_sub':'专属迁移技能',
+    'qa.stat2_label':'审查轮次',
+    'qa.stat2_sub':'跨模型全面覆盖',
+    'qa.stat3_label':'修复项',
+    'qa.stat3_sub':'死代码 · 边界条件 · 文档一致性',
+    'qa.th.round':'轮次',
+    'qa.th.model':'模型',
+    'qa.th.findings':'问题',
+    'qa.th.focus':'重点',
+    'footer.copyright':'Jove Rina © 2026 · ♥ ·',
+  },
+  en:{
+    'nav.home':'Home',
+    'nav.features':'Features',
+    'nav.workflow':'Workflow',
+    'nav.qa':'QA',
+    'hero.title':'Windows Migration',
+    'hero.sub':'Migrate Hermes Agent data from C: drive to any custom directory — zero deletion, incremental copy, auto env-var setup.',
+    'install.title':'Quick Install',
+    'install.step1':'Install skill',
+    'install.step2':'Install migration skill',
+    'install.step3':'Load & run',
+    'features.label':'FEATURES',
+    'features.title':'Core Features',
+    'features.desc':'Six features make Windows migration safe, efficient, and risk-free',
+    'features.card1.title':'Zero Deletion',
+    'features.card1.desc':'Copies only, never deletes original data. Safe to try — rollback is instant.',
+    'features.card2.title':'Incremental Copy',
+    'features.card2.desc':'Uses robocopy with multi-thread, resume support, ACL & file attributes preserved.',
+    'features.card3.title':'Auto-Detection',
+    'features.card3.desc':'Smartly locates source by checking existing HERMES_HOME env var. No manual path guessing.',
+    'features.card4.title':'Auto Env-Var Setup',
+    'features.card4.desc':'Sets user-level HERMES_HOME environment variable. No admin or PowerShell expertise needed.',
+    'features.card5.title':'Verification Checklist',
+    'features.card5.desc':'Post-migration output shows step-by-step verification: paths, env var, data integrity.',
+    'features.card6.title':'Windows Only',
+    'features.card6.desc':'Designed for Windows native install. Not for WSL2, Linux, or macOS.',
+    'product.label':'SOLUTION',
+    'product.title':'Problem vs Solution',
+    'product.desc':'C: drive running out of space? Manual migration is risky. This skill automates the entire process.',
+    'product.problem_label':'Problem',
+    'product.problem_title':'C: Drive Spaces Fills Up Gradually',
+    'product.problem_desc':'Hermes stores data in C:\\Users\\<user>\\AppData\\Local\\hermes by default. Over time, logs, cache, and config data can consume gigabytes — filling the C: drive. Manual migration requires editing env vars, copying files, and ensuring correct paths — one wrong step can cause data loss or Hermes failure, and requires admin-level PowerShell knowledge.',
+    'product.solution_label':'Solution',
+    'product.solution_title':'Fully Automated Migration — Zero Data Loss',
+    'product.solution_desc':'This Hermes Agent skill provides a fully automated migration — robocopy for fast incremental transfer with zero data loss, auto-detect existing HERMES_HOME setup, auto-configure user-level HERMES_HOME env var. Three approaches available: one-click automated script, manual PowerShell steps, or full AI-guided migration. No admin or PowerShell expertise needed.',
+    'workflow.label':'WORKFLOW',
+    'workflow.title':'Quick Start',
+    'workflow.desc':'5 steps from install to verification',
+    'workflow.step1.title':'Install the Skill',
+    'workflow.step1.desc':'Add the jove-rina skill tap and install the windows-migration skill',
+    'workflow.step2.title':'Load the Skill in Chat',
+    'workflow.step2.desc':'Use the /skill command to load the migration skill so the AI understands your environment',
+    'workflow.step3.title':'Choose Migration Approach',
+    'workflow.step3.desc':'Three options: Automated (A), Manual PowerShell (B), or AI-guided (C)',
+    'workflow.step4.title':'Run the Migration',
+    'workflow.step4.desc':'The AI agent handles all robocopy commands and env var configuration automatically',
+    'workflow.step5.title':'Verify the Results',
+    'workflow.step5.desc':'Use the built-in checklist to verify paths, env var, and data integrity',
+    'qa.label':'QA',
+    'qa.title':'Review History',
+    'qa.desc':'8 rounds across 3 models, 34 issues fixed, ensuring production quality',
+    'qa.stat1_label':'Skills',
+    'qa.stat1_sub':'Dedicated migration skill',
+    'qa.stat2_label':'Review Rounds',
+    'qa.stat2_sub':'Cross-model coverage',
+    'qa.stat3_label':'Fixes',
+    'qa.stat3_sub':'Dead code · Edge cases · Doc consistency',
+    'qa.th.round':'Round',
+    'qa.th.model':'Model',
+    'qa.th.findings':'Issues',
+    'qa.th.focus':'Focus',
+    'footer.copyright':'Jove Rina © 2026 · ♥ ·',
+  }
+};
+
+function applyLang(lang){
+  currentLang=lang;
+  localStorage.setItem('jove-lang',lang);
+  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+  document.getElementById('langSelect').value=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(dict[lang]&&dict[lang][key])el.innerHTML=dict[lang][key];
+  });
+}
+document.getElementById('langSelect').addEventListener('change',function(){applyLang(this.value)});
+applyLang(getSavedLang());
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
