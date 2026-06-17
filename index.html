@@ -219,7 +219,7 @@ body{
    SCROLL INDICATOR
    ═══════════════════════════════════════ */
 .scroll-ind{
-  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:32px;left:0;right:0;
   display:flex;flex-direction:column;align-items:center;gap:6px;
   color:var(--text2);font-size:11px;letter-spacing:2px;
   opacity:0;animation:fadeUp 1s 1.5s forwards;
@@ -288,7 +288,7 @@ body{
    FOCUS / CORE CAPABILITIES
    ═══════════════════════════════════════ */
 .focus-grid{
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
 }
 .focus-item{
   background:var(--surface);
@@ -367,6 +367,21 @@ body{
 }
 .project-card:hover .arrow{opacity:1;transform:translateX(0)}
 .project-info p{font-size:14px;color:var(--text2);line-height:1.7}
+
+/* Project groups */
+.project-group{margin-bottom:32px}
+.project-group:last-child{margin-bottom:0}
+.project-group-header{
+  display:flex;align-items:baseline;gap:12px;
+  margin-bottom:12px;padding-left:4px;
+}
+.project-group-title{
+  font-size:15px;font-weight:700;color:var(--text);
+}
+.project-group-count{
+  font-size:12px;color:var(--text2);opacity:.6;
+  font-family:var(--mono);
+}
 .project-meta{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
 .project-meta span{
   font-size:12px;color:var(--text2);opacity:.7;
@@ -538,60 +553,69 @@ body{
       </p>
     </div>
     <div class="projects-grid">
-      <a href="projects/hermes-windows-migration/" class="project-card reveal">
-        <div class="project-icon">💾</div>
-        <div class="project-info">
-          <h3>
-            Windows Migration
-            <span class="arrow">→</span>
-          </h3>
-          <p data-i18n="projects.card1.desc">
-            将 Hermes Agent 数据从 C 盘迁移到自定义目录。
-            零删除、增量复制、自动环境变量配置，一键迁移。
-          </p>
-          <div class="project-meta">
-            <span>Jove Hermes Skills</span>
-            <span>Windows</span>
-            <span>v1.0.1</span>
-          </div>
+      <div class="project-group">
+        <div class="project-group-header">
+          <h3 class="project-group-title">Jove Hermes Skills</h3>
+          <span class="project-group-count">2 skills</span>
         </div>
-      </a>
-      <a href="projects/axure-utilities/" class="project-card reveal">
-        <div class="project-icon">🧩</div>
-        <div class="project-info">
-          <h3>
-            Axure Utilities
-            <span class="arrow">→</span>
-          </h3>
-          <p data-i18n="projects.card2.desc">
-            Chrome/Edge 扩展，从蓝湖 Axure 原型中框选提取内容，
-            组装为结构化 Markdown 文档。v2 已完成 Vite + TypeScript 工程化改造。
-          </p>
-          <div class="project-meta">
-            <span>Chrome Extension</span>
-            <span>Vite + TypeScript</span>
-            <span>Manifest V3</span>
+        <a href="projects/hermes-windows-migration/" class="project-card reveal" style="margin-bottom:12px">
+          <div class="project-icon">💾</div>
+          <div class="project-info">
+            <h3>
+              Windows Migration
+              <span class="arrow">→</span>
+            </h3>
+            <p data-i18n="projects.card1.desc">
+              将 Hermes Agent 数据从 C 盘迁移到自定义目录。
+              零删除、增量复制、自动环境变量配置，一键迁移。
+            </p>
+            <div class="project-meta">
+              <span>Windows</span>
+              <span>v1.0.1</span>
+            </div>
           </div>
-        </div>
-      </a>
-      <a href="projects/hermes-wechat-integration/" class="project-card reveal">
-        <div class="project-icon">💬</div>
-        <div class="project-info">
-          <h3>
-            WeChat Integration
-            <span class="arrow">→</span>
-          </h3>
-          <p data-i18n="projects.card3.desc">
-            Hermes Agent 微信集成技能。官方 iLink Bot API 接入，
-            QR 码登录、双层门控授权、context_token 机制、多 Profile 隔离。
-          </p>
-          <div class="project-meta">
-            <span>Jove Hermes Skills</span>
-            <span>WeChat</span>
-            <span>v1.9.0</span>
+        </a>
+        <a href="projects/hermes-wechat-integration/" class="project-card reveal">
+          <div class="project-icon">💬</div>
+          <div class="project-info">
+            <h3>
+              WeChat Integration
+              <span class="arrow">→</span>
+            </h3>
+            <p data-i18n="projects.card3.desc">
+              Hermes Agent 微信集成技能。官方 iLink Bot API 接入，
+              QR 码登录、双层门控授权、context_token 机制、多 Profile 隔离。
+            </p>
+            <div class="project-meta">
+              <span>WeChat</span>
+              <span>v1.9.0</span>
+            </div>
           </div>
+        </a>
+      </div>
+      <div class="project-group">
+        <div class="project-group-header">
+          <h3 class="project-group-title">Browser Extensions</h3>
+          <span class="project-group-count">1 extension</span>
         </div>
-      </a>
+        <a href="projects/axure-utilities/" class="project-card reveal">
+          <div class="project-icon">🧩</div>
+          <div class="project-info">
+            <h3>
+              Axure Utilities
+              <span class="arrow">→</span>
+            </h3>
+            <p data-i18n="projects.card2.desc">
+              Chrome/Edge 扩展，从蓝湖 Axure 原型中框选提取内容，
+              组装为结构化 Markdown 文档。v2 已完成 Vite + TypeScript 工程化改造。
+            </p>
+            <div class="project-meta">
+              <span>Chrome Extension</span>
+              <span>Manifest V3</span>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -606,19 +630,24 @@ body{
     </div>
     <div class="focus-grid">
       <div class="focus-item reveal">
+        <span class="icon">🤖</span>
+        <h3 data-i18n="focus.item1.title">为AI赋能</h3>
+        <p data-i18n="focus.item1.desc">每个技能专为 AI Agent 设计：QR 码替代协议、凭据提取模式、context_token 机制，让 AI 自主完成复杂任务</p>
+      </div>
+      <div class="focus-item reveal">
         <span class="icon">🧩</span>
-        <h3 data-i18n="focus.item1.title">匠心工具</h3>
-        <p data-i18n="focus.item1.desc">从 AI Agent 技能到浏览器扩展，每件作品都经过精心设计、反复打磨</p>
+        <h3 data-i18n="focus.item2.title">匠心工具</h3>
+        <p data-i18n="focus.item2.desc">从 AI Agent 技能到浏览器扩展，每件作品都经过精心设计、反复打磨</p>
       </div>
       <div class="focus-item reveal">
         <span class="icon">✅</span>
-        <h3 data-i18n="focus.item2.title">跨模型验证</h3>
-        <p data-i18n="focus.item2.desc">每个技能经过 3+ 模型、多轮审查，从代码到文档全面保障质量</p>
+        <h3 data-i18n="focus.item3.title">跨模型验证</h3>
+        <p data-i18n="focus.item3.desc">每个技能经过 4 个模型、7-8 轮独立审查，从代码到文档全面保障质量</p>
       </div>
       <div class="focus-item reveal">
         <span class="icon">🌐</span>
-        <h3 data-i18n="focus.item3.title">开源社区</h3>
-        <p data-i18n="focus.item3.desc">CC0 公有领域许可，自由使用、修改、分享，推动社区共同进步</p>
+        <h3 data-i18n="focus.item4.title">开源社区</h3>
+        <p data-i18n="focus.item4.desc">CC0 公有领域许可，自由使用、修改、分享，推动社区共同进步</p>
       </div>
     </div>
   </div>
@@ -718,13 +747,15 @@ const dict={
     'about.card2.desc':'每个技能都经过多轮跨模型审查 —— 从文档一致性到边界条件，不放过任何细节，确保生产级交付质量。',
     'about.card2.tag':'Cross‑Model Review',
     'focus.label':'核心','focus.title':'核心能力',
-    'focus.desc':'三大支柱，打造值得信赖的开源工具',
-    'focus.item1.title':'匠心工具',
-    'focus.item1.desc':'从 AI Agent 技能到浏览器扩展，每件作品都经过精心设计、反复打磨',
-    'focus.item2.title':'跨模型验证',
-    'focus.item2.desc':'每个技能经过 3+ 模型、多轮审查，从代码到文档全面保障质量',
-    'focus.item3.title':'开源社区',
-    'focus.item3.desc':'CC0 公有领域许可，自由使用、修改、分享，推动社区共同进步',
+    'focus.desc':'四大核心能力，打造值得信赖的开源工具',
+    'focus.item1.title':'为AI赋能',
+    'focus.item1.desc':'每个技能专为 AI Agent 设计：QR 码替代协议、凭据提取模式、context_token 机制，让 AI 自主完成复杂任务',
+    'focus.item2.title':'匠心工具',
+    'focus.item2.desc':'从 AI Agent 技能到浏览器扩展，每件作品都经过精心设计、反复打磨',
+    'focus.item3.title':'跨模型验证',
+    'focus.item3.desc':'每个技能经过 4 个模型、7-8 轮独立审查，从代码到文档全面保障质量',
+    'focus.item4.title':'开源社区',
+    'focus.item4.desc':'CC0 公有领域许可，自由使用、修改、分享，推动社区共同进步',
     'projects.label':'项目','projects.title':'开源项目',
     'projects.desc':'我们开发的开源项目 —— 从 AI 工具链到实用浏览器扩展，全部开源',
     'projects.card1.desc':'将 Hermes Agent 数据从 C 盘迁移到自定义目录。零删除、增量复制、自动环境变量配置，一键迁移。',
@@ -754,13 +785,15 @@ const dict={
     'about.card2.desc':'Every skill goes through multi‑model, multi‑round review — from doc consistency to edge cases. No shortcuts.',
     'about.card2.tag':'Cross‑Model Review',
     'focus.label':'FOCUS','focus.title':'Core Capabilities',
-    'focus.desc':'Three pillars powering trustworthy open source tools',
-    'focus.item1.title':'Craft Tools',
-    'focus.item1.desc':'From AI agent skills to browser extensions — every piece is carefully designed and polished',
-    'focus.item2.title':'Cross‑Model QA',
-    'focus.item2.desc':'Every skill reviewed by 3+ models, multi‑round — code and docs, fully covered',
-    'focus.item3.title':'Open Source',
-    'focus.item3.desc':'CC0 public domain — use, modify, share freely. Community progress for all',
+    'focus.desc':'Four core capabilities powering trustworthy open source tools',
+    'focus.item1.title':'AI-Native',
+    'focus.item1.desc':'Every skill designed for AI Agent consumption: QR proxy protocols, credential extraction patterns, context_token awareness. AI knows its boundaries and handles complex tasks.',
+    'focus.item2.title':'Craft Tools',
+    'focus.item2.desc':'From AI agent skills to browser extensions — every piece is carefully designed and polished',
+    'focus.item3.title':'Cross‑Model QA',
+    'focus.item3.desc':'Every skill reviewed by 4 models, 7-8 rounds — code and docs, fully covered',
+    'focus.item4.title':'Open Source',
+    'focus.item4.desc':'CC0 public domain — use, modify, share freely. Community progress for all',
     'projects.label':'PROJECTS','projects.title':'Open Source',
     'projects.desc':'Open source projects we build — from AI toolchains to practical browser extensions',
     'projects.card1.desc':'Migrate Hermes Agent data from C: drive to any custom directory. Zero deletion, incremental copy, auto env-var setup. One-click migration.',
