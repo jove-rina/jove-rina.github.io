@@ -352,18 +352,14 @@ body{
     <div class="install-box">
       <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
       <div class="install-body">
-        <span class="comment"># <span data-i18n="install.step1">安装依赖</span></span><br />
-        pip install aiohttp cryptography<br />
+        <span class="comment"># <span data-i18n="install.step1">添加技能源</span></span><br />
+        hermes skills tap add jove-rina/jove-hermes-skills<br />
         <br />
-        <span class="comment"># <span data-i18n="install.step2">初始化网关</span></span><br />
-        hermes gateway setup<br />
+        <span class="comment"># <span data-i18n="install.step2">安装微信集成技能</span></span><br />
+        hermes skills install jove-rina/jove-hermes-skills/hermes-wechat-integration<br />
         <br />
-        <span class="comment"># <span data-i18n="install.step3">配置环境变量</span></span><br />
-        <span class="cmd">echo <span class="string">"WEIXIN_DM_POLICY=allowlist"</span> &gt;&gt; $HERMES_HOME/.env</span><br />
-        <span class="cmd">echo <span class="string">"WEIXIN_ALLOWED_USERS=&lt;user_id&gt;"</span> &gt;&gt; $HERMES_HOME/.env</span><br />
-        <br />
-        <span class="comment"># <span data-i18n="install.step4">启动网关</span></span><br />
-        hermes gateway start
+        <span class="comment"># <span data-i18n="install.step3">在对话中加载</span></span><br />
+        <span class="cmd">/skill hermes-wechat-integration</span>
       </div>
     </div>
   </div>
@@ -654,10 +650,9 @@ const dict={
     'hero.title':'微信集成',
     'hero.sub':'将 Hermes Agent 连接到个人微信 — 消息收发、多配置隔离与故障排查',
     'install.title':'快速安装',
-    'install.step1':'安装依赖',
-    'install.step2':'初始化网关',
-    'install.step3':'配置环境变量',
-    'install.step4':'启动网关',
+    'install.step1':'添加技能源',
+    'install.step2':'安装微信集成技能',
+    'install.step3':'在对话中加载',
     'features.label':'特性',
     'features.title':'核心特性',
     'features.desc':'六大特性让 WeChat 集成安全、高效、易于管理',
@@ -717,10 +712,9 @@ const dict={
     'hero.title':'WeChat Integration',
     'hero.sub':'Connect Hermes Agent to personal WeChat — message send/receive, multi-profile isolation, and troubleshooting.',
     'install.title':'Quick Install',
-    'install.step1':'Install deps',
-    'install.step2':'Init gateway',
-    'install.step3':'Set env vars',
-    'install.step4':'Start gateway',
+    'install.step1':'Add skill source',
+    'install.step2':'Install WeChat Integration skill',
+    'install.step3':'Load in chat',
     'features.label':'FEATURES',
     'features.title':'Core Features',
     'features.desc':'Six features make WeChat integration secure, efficient, and easy to manage',
