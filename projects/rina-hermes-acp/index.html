@@ -135,6 +135,8 @@ body{
 .install-body .cmd{color:var(--green)}
 .install-body .string{color:var(--pink)}
 .install-body .link{color:var(--cyan);text-decoration:underline}
+.install-body a{color:var(--cyan);text-decoration:underline;transition:color .3s}
+.install-body a:hover{color:var(--accent)}
 
 .section{
   position:relative;z-index:1;
@@ -316,13 +318,12 @@ body{
       <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
       <div class="install-body">
         <span class="comment"># <span data-i18n="install.step1">VS Code — 扩展市场搜索</span></span><br />
-        <span class="string">"Rina Hermes ACP"</span> <span class="comment">或</span> <span class="string">"JoveRina"</span><br />
+        <span class="string">"Rina Hermes ACP"</span> <span class="comment" data-i18n="install.or">或</span> <span class="string">"JoveRina"</span><br />
+        <span class="comment">  → </span><a href="https://marketplace.visualstudio.com/items?itemName=JoveRina.rina-hermes-acp" target="_blank"><span data-i18n="install.vscode-link">VS Code Marketplace 在线安装 ↗</span></a><br />
         <br />
         <span class="comment"># <span data-i18n="install.step2">Cursor — 设置 → Extensions → 搜索</span></span><br />
         <span class="string">"Rina Hermes ACP"</span><br />
-        <br />
-        <span class="comment"># <span data-i18n="install.step3">或通过 VS Code Marketplace 在线安装</span></span><br />
-        <span class="link">marketplace.visualstudio.com/items?itemName=JoveRina.rina-hermes-acp</span>
+        <span class="comment">  → </span><a href="https://marketplace.visualstudio.com/items?itemName=JoveRina.rina-hermes-acp" target="_blank"><span data-i18n="install.cursor-link">VS Code Marketplace 在线安装 ↗</span></a>
       </div>
     </div>
   </div>
@@ -421,8 +422,10 @@ const dict={
     'hero.sub':'在 VS Code / Cursor 中直接与 Hermes Agent 对话 —— 无需切换终端',
     'install.title':'快速安装',
     'install.step1':'VS Code — 扩展市场搜索',
+    'install.or':'或',
     'install.step2':'Cursor — 设置 → Extensions → 搜索',
-    'install.step3':'或通过 VS Code Marketplace 在线安装',
+    'install.vscode-link':'VS Code Marketplace 在线安装 ↗',
+    'install.cursor-link':'VS Code Marketplace 在线安装 ↗',
     'features.label':'特性','features.title':'核心特性',
     'features.desc':'六大特性，让 AI 助手融入编辑器工作流',
     'features.card1.title':'Sidebar Chat',
@@ -448,8 +451,10 @@ const dict={
     'hero.sub':'Chat with Hermes Agent directly inside VS Code / Cursor — no terminal switching required.',
     'install.title':'Quick Install',
     'install.step1':'VS Code — Search Extensions for',
+    'install.or':'or',
     'install.step2':'Cursor — Settings → Extensions → Search',
-    'install.step3':'Or install from VS Code Marketplace',
+    'install.vscode-link':'Install from VS Code Marketplace ↗',
+    'install.cursor-link':'Install from VS Code Marketplace ↗',
     'features.label':'FEATURES','features.title':'Core Features',
     'features.desc':'Six features that bring AI assistant into your editor workflow',
     'features.card1.title':'Sidebar Chat',
