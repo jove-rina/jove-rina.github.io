@@ -534,6 +534,10 @@ body{
         <div class="stat-num">1</div>
         <div class="stat-label" data-i18n="hero.stat4">Extension</div>
       </div>
+      <div class="stat-item">
+        <div class="stat-num">1</div>
+        <div class="stat-label" data-i18n="hero.stat5">Plugin</div>
+      </div>
     </div>
   </div>
   <div class="scroll-ind">
@@ -612,6 +616,30 @@ body{
             <div class="project-meta">
               <span>Chrome Extension</span>
               <span>Manifest V3</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="project-group">
+        <div class="project-group-header">
+          <h3 class="project-group-title" data-i18n="projects.group4">IDE 插件</h3>
+          <span class="project-group-count">1 plugin</span>
+        </div>
+        <a href="projects/rina-hermes-acp/" class="project-card reveal">
+          <div class="project-icon">🤖</div>
+          <div class="project-info">
+            <h3>
+              Rina Hermes ACP
+              <span class="arrow">→</span>
+            </h3>
+            <p data-i18n="projects.card4.desc">
+              在 VS Code / Cursor 侧边栏中直接与 Hermes Agent 对话。
+              流式回复、代码块一键插入、多会话管理、双语界面。
+            </p>
+            <div class="project-meta">
+              <span>VS Code</span>
+              <span>Cursor</span>
+              <span>v0.2.2</span>
             </div>
           </div>
         </a>
@@ -737,6 +765,7 @@ const dict={
     'hero.stat2':'审查轮次',
     'hero.stat3':'修复问题',
     'hero.stat4':'插件',
+    'hero.stat5':'插件',
     'hero.scroll':'向下滚动',
     'about.label':'关于','about.title':'Jove Rina',
     'about.desc':'专注于高质量开源工具的打造 —— 从 AI 技能到浏览器插件，每个项目都经过精心打磨',
@@ -761,6 +790,8 @@ const dict={
     'projects.card1.desc':'将 Hermes Agent 数据从 C 盘迁移到自定义目录。零删除、增量复制、自动环境变量配置，一键迁移。',
     'projects.card2.desc':'Chrome/Edge 扩展，从蓝湖 Axure 原型中框选提取内容，组装为结构化 Markdown 文档。v2 已完成 Vite + TypeScript 工程化改造。',
     'projects.card3.desc':'Hermes Agent 微信集成技能。官方 iLink Bot API 接入，QR 码登录、双层门控授权、多 Profile 隔离。',
+    'projects.card4.desc':'在 VS Code / Cursor 侧边栏中直接与 Hermes Agent 对话。流式回复、代码块一键插入、多会话管理、双语界面。',
+    'projects.group4':'IDE 插件',
     'contact.label':'联系','contact.title':'找到我们',
     'contact.desc':'对项目有想法、建议或合作意向？欢迎联系',
     'contact.discuss':'社区讨论',
@@ -775,6 +806,7 @@ const dict={
     'hero.stat2':'Review Rounds',
     'hero.stat3':'Issues Fixed',
     'hero.stat4':'Extension',
+    'hero.stat5':'Plugin',
     'hero.scroll':'SCROLL',
     'about.label':'ABOUT','about.title':'Jove Rina',
     'about.desc':'Building quality open source tools — from AI skills to browser extensions, every project is crafted with care.',
@@ -799,6 +831,8 @@ const dict={
     'projects.card1.desc':'Migrate Hermes Agent data from C: drive to any custom directory. Zero deletion, incremental copy, auto env-var setup. One-click migration.',
     'projects.card2.desc':'Chrome/Edge extension that extracts Axure prototype content from lanhuapp.com into structured Markdown documents via drag-select. v2 rebuilt with Vite + TypeScript.',
     'projects.card3.desc':'WeChat integration for Hermes Agent. Official iLink Bot API, QR code auth, two-gate authorization, multi-profile isolation.',
+    'projects.card4.desc':'Chat with Hermes Agent directly in your VS Code / Cursor sidebar. Streaming replies, one-click code insert, multi-session tabs, bilingual UI.',
+    'projects.group4':'IDE Plugins',
     'contact.label':'CONTACT','contact.title':'Get in Touch',
     'contact.desc':'Got ideas, suggestions, or want to collaborate? Reach out.',
     'contact.discuss':'Discussions',

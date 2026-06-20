@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rina Hermes ACP — VS Code & Cursor 插件</title>
+<meta name="description" content="Chat with Hermes Agent directly inside VS Code / Cursor — no terminal switching required." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #050510;
+  --bg2: #0a0a20;
+  --surface: rgba(18,18,34,.72);
+  --surface-border: rgba(167,139,250,.15);
+  --text: #eeeef8;
+  --text2: #8888bb;
+  --accent: #a78bfa;
+  --cyan: #22d3ee;
+  --pink: #e879f9;
+  --green: #6ee7b7;
+  --orange: #fbbf24;
+  --gradient-1: linear-gradient(135deg,#a78bfa,#22d3ee);
+  --gradient-2: linear-gradient(135deg,#22d3ee,#e879f9);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --font: 'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono: 'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+::selection{background:rgba(167,139,250,.35)}
+
+#canvas-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  background:rgba(5,5,16,.6);
+  border-bottom:1px solid var(--surface-border);
+  padding:0 28px;
+}
+.nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.nav-back a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:4px;transition:color .3s;
+}
+.nav-back a:hover{color:var(--accent)}
+.nav-brand{
+  font-size:16px;font-weight:700;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  font-family:var(--mono);
+}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{
+  color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;
+  position:relative;transition:color .3s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:var(--gradient-1);border-radius:2px;
+  transition:width .3s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.lang-select{
+  padding:5px 10px;border-radius:100px;
+  background:rgba(167,139,250,.1);
+  border:1px solid rgba(167,139,250,.2);
+  color:var(--accent);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .3s;font-family:var(--font);
+  outline:none;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a78bfa'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;
+}
+.lang-select:hover{background:rgba(167,139,250,.2);border-color:var(--accent)}
+.lang-select option{background:#1a1a2e;color:#eeeef8}
+
+.hero{
+  position:relative;z-index:1;
+  padding:120px 28px 72px;text-align:center;
+}
+.hero-inner{max-width:960px;margin:0 auto}
+.hero-icon{font-size:52px;margin-bottom:20px;display:inline-block;animation:float 4s ease-in-out infinite}
+.hero h1{
+  font-size:clamp(32px,5vw,56px);font-weight:900;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-.5px;
+  margin-bottom:12px;
+}
+.hero-sub{font-size:16px;color:var(--text2);max-width:540px;margin:0 auto}
+.hero-badges{display:flex;justify-content:center;gap:10px;margin-top:24px;flex-wrap:wrap}
+.hero-badge{
+  padding:4px 14px;border-radius:100px;font-size:12px;font-weight:500;
+  background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15);color:var(--accent);
+}
+.hero-badge.green{background:rgba(110,231,183,.08);border-color:rgba(110,231,183,.15);color:var(--green)}
+.hero-badge.pink{background:rgba(232,121,249,.08);border-color:rgba(232,121,249,.15);color:var(--pink)}
+.hero-badge.orange{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.15);color:var(--orange)}
+.hero-badge.cyan{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.15);color:var(--cyan)}
+
+.install-box{
+  max-width:680px;margin:36px auto 0;
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);text-align:left;
+  backdrop-filter:blur(12px);
+  transition:border-color .3s;
+}
+.install-box:hover{border-color:rgba(167,139,250,.3)}
+.install-header{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 20px;border-bottom:1px solid var(--surface-border);
+  font-size:12px;color:var(--text2);font-weight:600;
+}
+.install-body{
+  padding:16px 20px;
+  font-family:var(--mono);font-size:13px;line-height:2;
+  color:var(--text2);overflow-x:auto;
+}
+.install-body .comment{color:#6b7280}
+.install-body .cmd{color:var(--green)}
+.install-body .string{color:var(--pink)}
+.install-body .link{color:var(--cyan);text-decoration:underline}
+
+.section{
+  position:relative;z-index:1;
+  padding:80px 28px;
+}
+.section-inner{max-width:960px;margin:0 auto}
+.section-header{margin-bottom:48px}
+.section-label{
+  font-size:12px;font-weight:600;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:var(--surface-border);max-width:60px;
+}
+.section-title{font-size:clamp(22px,3vw,32px);font-weight:800;margin-bottom:8px}
+.section-desc{color:var(--text2);font-size:14px;max-width:500px}
+
+.focus-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+}
+.focus-item{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:24px;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  opacity:0;transform:translateY(30px);
+}
+.focus-item.visible{opacity:1;transform:translateY(0)}
+.focus-item:hover{
+  border-color:var(--accent);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(167,139,250,.1);
+}
+.focus-item .icon{font-size:28px;margin-bottom:8px}
+.focus-item h4{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.focus-item p{font-size:12px;color:var(--text2);line-height:1.7}
+
+.product-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;
+}
+.product-card{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius);padding:28px 32px;
+  backdrop-filter:blur(12px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  opacity:0;transform:translateY(30px);
+}
+.product-card.visible{opacity:1;transform:translateY(0)}
+.product-card:hover{
+  border-color:rgba(167,139,250,.25);
+  transform:translateY(-2px);
+}
+.product-card .card-label{
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:12px;
+}
+.product-card .card-label.problem{color:var(--pink)}
+.product-card .card-label.solution{color:var(--green)}
+.product-card h3{font-size:18px;font-weight:700;margin-bottom:10px}
+.product-card p{font-size:14px;color:var(--text2);line-height:1.8}
+
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin-bottom:36px;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--surface-border);
+  border-radius:var(--radius-sm);padding:20px;
+  backdrop-filter:blur(12px);text-align:center;
+  transition:all .4s;
+  opacity:0;transform:translateY(20px);
+}
+.stat-card.visible{opacity:1;transform:translateY(0)}
+.stat-card:hover{border-color:rgba(167,139,250,.2);transform:translateY(-2px)}
+.stat-card .num{
+  font-size:36px;font-weight:800;
+  background:var(--gradient-1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1.2;
+}
+.stat-card .label{font-size:13px;color:var(--text2);margin-top:4px}
+.stat-card .sub{font-size:11px;color:var(--text2);opacity:.6;margin-top:2px}
+
+.cta-row{
+  display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:48px;
+}
+.btn-primary,.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:100px;
+  font-size:14px;font-weight:600;text-decoration:none;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+  font-family:var(--font);
+}
+.btn-primary{
+  background:var(--gradient-1);
+  color:#050510;border:none;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(167,139,250,.35);
+}
+.btn-secondary{
+  background:transparent;
+  border:1px solid var(--surface-border);
+  color:var(--text);
+}
+.btn-secondary:hover{
+  border-color:var(--accent);
+  background:rgba(167,139,250,.08);
+  transform:translateY(-2px);
+}
+
+.footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--surface-border);
+  padding:40px 28px 56px;text-align:center;
+}
+.footer p{font-size:13px;color:var(--text2);opacity:.6}
+.footer a{color:var(--accent);text-decoration:none}
+.footer a:hover{text-decoration:underline}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hero{padding:100px 20px 48px}
+  .focus-grid{grid-template-columns:1fr}
+  .product-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr}
+  .section{padding:56px 20px}
+  .section-header{margin-bottom:32px}
+}
+@media(max-width:480px){
+  .hero h1{font-size:28px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- ─── Nav ─── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-back">
+      <a href="/">← <span data-i18n="nav.home">首页</span></a>
+    </div>
+    <div class="nav-brand">Jove Rina</div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#features" data-i18n="nav.features">特性</a>
+        <a href="#install" data-i18n="nav.install">安装</a>
+        <a href="https://github.com/jove-rina/rina-hermes-acp">GitHub</a>
+      </div>
+      <select class="lang-select" id="langSelect">
+        <option value="en">EN</option>
+        <option value="zh">中</option>
+      </select>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-icon">🤖</div>
+    <h1 data-i18n="hero.title">Rina Hermes ACP</h1>
+    <p class="hero-sub" data-i18n="hero.sub">
+      Chat with Hermes Agent directly inside VS Code / Cursor — no terminal switching required.
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">🏷️ v0.2.2</span>
+      <span class="hero-badge green">🔧 VS Code</span>
+      <span class="hero-badge pink">🖊️ Cursor</span>
+      <span class="hero-badge cyan">🔌 ACP Protocol</span>
+    </div>
+    <div class="install-box">
+      <div class="install-header">⚡ <span data-i18n="install.title">快速安装</span></div>
+      <div class="install-body">
+        <span class="comment"># <span data-i18n="install.step1">VS Code — 扩展市场搜索</span></span><br />
+        <span class="string">"Rina Hermes ACP"</span> <span class="comment">或</span> <span class="string">"JoveRina"</span><br />
+        <br />
+        <span class="comment"># <span data-i18n="install.step2">Cursor — 设置 → Extensions → 搜索</span></span><br />
+        <span class="string">"Rina Hermes ACP"</span><br />
+        <br />
+        <span class="comment"># <span data-i18n="install.step3">或通过 VS Code Marketplace 在线安装</span></span><br />
+        <span class="link">marketplace.visualstudio.com/items?itemName=JoveRina.rina-hermes-acp</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features ─── -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-label"><span data-i18n="features.label">特性</span></div>
+      <h2 class="section-title" data-i18n="features.title">核心特性</h2>
+      <p class="section-desc" data-i18n="features.desc">六大特性，让 AI 助手融入编辑器工作流</p>
+    </div>
+    <div class="focus-grid">
+      <div class="focus-item reveal">
+        <div class="icon">💬</div>
+        <h4 data-i18n="features.card1.title">Sidebar Chat</h4>
+        <p data-i18n="features.card1.desc">WebView 聊天面板，流式回复、Markdown 渲染、代码高亮，无需切终端窗口</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">✂️</div>
+        <h4 data-i18n="features.card2.title">编辑器联动</h4>
+        <p data-i18n="features.card2.desc">代码块一键插入光标位置；@ 引用文件直接打开；右键发送选中代码到聊天</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">📑</div>
+        <h4 data-i18n="features.card3.title">多会话管理</h4>
+        <p data-i18n="features.card3.desc">Tab 式会话切换，历史记录本地持久化，支持会话内搜索和重命名</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">🎛️</div>
+        <h4 data-i18n="features.card4.title">多 Agent 切换</h4>
+        <p data-i18n="features.card4.desc">配置命名 Agent（不同路径/Profile/工作目录），模型选择器和 Profile 快速切换</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">🔍</div>
+        <h4 data-i18n="features.card5.title">完全透明</h4>
+        <p data-i18n="features.card5.desc">可选展示思维链和工具调用过程；连接日志可查看和复制，权限提示可控</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">🌐</div>
+        <h4 data-i18n="features.card6.title">双语界面</h4>
+        <p data-i18n="features.card6.desc">跟随 VS Code 显示语言自动切换，支持英文和简体中文</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Stats + CTA ─── -->
+<section class="section" id="install">
+  <div class="section-inner">
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="num">v0.2.2</div>
+        <div class="label" data-i18n="stat.version">当前版本</div>
+        <div class="sub" data-i18n="stat.versionSub">VS Code ≥ 1.85</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num">MIT</div>
+        <div class="label" data-i18n="stat.license">开源许可</div>
+        <div class="sub" data-i18n="stat.licenseSub">自由使用与修改</div>
+      </div>
+      <div class="stat-card reveal">
+        <div class="num">ACP</div>
+        <div class="label" data-i18n="stat.protocol">通信协议</div>
+        <div class="sub" data-i18n="stat.protocolSub">Agent Client Protocol</div>
+      </div>
+    </div>
+    <div class="cta-row">
+      <a href="https://github.com/jove-rina/rina-hermes-acp" target="_blank" class="btn-primary">
+        🐙 GitHub <span data-i18n="cta.repo">仓库</span> ↗
+      </a>
+      <a href="https://marketplace.visualstudio.com/items?itemName=JoveRina.rina-hermes-acp" target="_blank" class="btn-secondary">
+        📦 VS Code Marketplace ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+  <p>Jove Rina © 2026 &nbsp;·&nbsp; <span class="heart" style="color:var(--pink)">♥</span></p>
+</footer>
+
+<script>
+const canvas = document.getElementById('canvas-bg');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [], mouse = {x:0,y:0};
+
+function getSavedLang(){return localStorage.getItem('jove-lang')||'en'}
+let currentLang=getSavedLang();
+const dict={
+  zh:{
+    'nav.home':'首页','nav.features':'特性','nav.install':'安装',
+    'hero.title':'Rina Hermes ACP',
+    'hero.sub':'在 VS Code / Cursor 中直接与 Hermes Agent 对话 —— 无需切换终端',
+    'install.title':'快速安装',
+    'install.step1':'VS Code — 扩展市场搜索',
+    'install.step2':'Cursor — 设置 → Extensions → 搜索',
+    'install.step3':'或通过 VS Code Marketplace 在线安装',
+    'features.label':'特性','features.title':'核心特性',
+    'features.desc':'六大特性，让 AI 助手融入编辑器工作流',
+    'features.card1.title':'Sidebar Chat',
+    'features.card1.desc':'WebView 聊天面板，流式回复、Markdown 渲染、代码高亮，无需切终端窗口',
+    'features.card2.title':'编辑器联动',
+    'features.card2.desc':'代码块一键插入光标位置；@ 引用文件直接打开；右键发送选中代码到聊天',
+    'features.card3.title':'多会话管理',
+    'features.card3.desc':'Tab 式会话切换，历史记录本地持久化，支持会话内搜索和重命名',
+    'features.card4.title':'多 Agent 切换',
+    'features.card4.desc':'配置命名 Agent（不同路径/Profile/工作目录），模型选择器和 Profile 快速切换',
+    'features.card5.title':'完全透明',
+    'features.card5.desc':'可选展示思维链和工具调用过程；连接日志可查看和复制，权限提示可控',
+    'features.card6.title':'双语界面',
+    'features.card6.desc':'跟随 VS Code 显示语言自动切换，支持英文和简体中文',
+    'stat.version':'当前版本','stat.versionSub':'VS Code ≥ 1.85',
+    'stat.license':'开源许可','stat.licenseSub':'MIT — 自由使用与修改',
+    'stat.protocol':'通信协议','stat.protocolSub':'Agent Client Protocol',
+    'cta.repo':'仓库',
+  },
+  en:{
+    'nav.home':'Home','nav.features':'Features','nav.install':'Install',
+    'hero.title':'Rina Hermes ACP',
+    'hero.sub':'Chat with Hermes Agent directly inside VS Code / Cursor — no terminal switching required.',
+    'install.title':'Quick Install',
+    'install.step1':'VS Code — Search Extensions for',
+    'install.step2':'Cursor — Settings → Extensions → Search',
+    'install.step3':'Or install from VS Code Marketplace',
+    'features.label':'FEATURES','features.title':'Core Features',
+    'features.desc':'Six features that bring AI assistant into your editor workflow',
+    'features.card1.title':'Sidebar Chat',
+    'features.card1.desc':'WebView chat panel with streaming replies, Markdown rendering, and syntax highlighting — no terminal alt-tab needed.',
+    'features.card2.title':'Editor Integration',
+    'features.card2.desc':'Insert code blocks at cursor with one click; @file references open in editor; right-click to send selection to chat.',
+    'features.card3.title':'Multi-Session',
+    'features.card3.desc':'Tabbed conversations with local persistence, in-session search, rename and delete.',
+    'features.card4.title':'Agent Switching',
+    'features.card4.desc':'Named agent configs (path/profile/cwd), model selector, and profile switcher.',
+    'features.card5.title':'Full Visibility',
+    'features.card5.desc':'Optional thoughts & tool call display; connection logs; permission prompts for tool access.',
+    'features.card6.title':'Bilingual UI',
+    'features.card6.desc':'Auto-switches with VS Code display language. English and Simplified Chinese.',
+    'stat.version':'Version','stat.versionSub':'VS Code ≥ 1.85',
+    'stat.license':'License','stat.licenseSub':'MIT — free to use and modify',
+    'stat.protocol':'Protocol','stat.protocolSub':'Agent Client Protocol',
+    'cta.repo':'Repository',
+  }
+};
+function applyLang(lang){
+  currentLang=lang;
+  localStorage.setItem('jove-lang',lang);
+  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+  document.getElementById('langSelect').value=lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(dict[lang]&&dict[lang][key])el.innerHTML=dict[lang][key];
+  });
+}
+
+function resize(){
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+}
+window.addEventListener('resize',resize); resize();
+
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;
+    this.y=Math.random()*H;
+    this.size=Math.random()*2+1;
+    this.speedX=(Math.random()-.5)*.5;
+    this.speedY=(Math.random()-.5)*.5;
+    this.opacity=Math.random()*.5+.1;
+    this.hue=250+Math.random()*60;
+  }
+  update(){
+    this.x+=this.speedX;
+    this.y+=this.speedY;
+    const dx=mouse.x-this.x, dy=mouse.y-this.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<150){
+      const force=(150-dist)/150*.3;
+      this.x-=dx/dist*force;
+      this.y-=dy/dist*force;
+    }
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${this.hue},70%,70%,${this.opacity})`;
+    ctx.fill();
+  }
+}
+for(let i=0;i<120;i++)particles.push(new Particle());
+
+function drawLines(){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<180){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`hsla(260,60%,70%,${.06*(1-dist/180)})`;
+        ctx.lineWidth=.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
+function animateParticles(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw()});
+  drawLines();
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+document.addEventListener('touchmove',e=>{
+  const t=e.touches[0];
+  mouse.x=t.clientX;mouse.y=t.clientY;
+},{passive:true});
+
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  const cur=window.scrollY;
+  const nav=document.getElementById('nav');
+  if(cur>lastScroll&&cur>100)nav.classList.add('hidden');
+  else nav.classList.remove('hidden');
+  lastScroll=cur;
+});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.15});
+document.querySelectorAll('.reveal,.stat-card,.focus-item,.product-card').forEach(el=>observer.observe(el));
+
+document.getElementById('langSelect').addEventListener('change',function(){applyLang(this.value)});
+applyLang(getSavedLang());
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target)target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
