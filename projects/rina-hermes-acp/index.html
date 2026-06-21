@@ -336,48 +336,43 @@ body{
     <div class="section-header">
       <div class="section-label"><span data-i18n="features.label">特性</span></div>
       <h2 class="section-title" data-i18n="features.title">核心特性</h2>
-      <p class="section-desc" data-i18n="features.desc">六大特性，让 AI 助手融入编辑器工作流</p>
+      <p class="section-desc" data-i18n="features.desc">七大特性，让 AI 助手融入编辑器工作流</p>
     </div>
     <div class="focus-grid">
       <div class="focus-item reveal">
         <div class="icon">💬</div>
-        <h4 data-i18n="features.card1.title">Sidebar Chat</h4>
-        <p data-i18n="features.card1.desc">WebView 聊天面板，流式回复、Markdown 渲染、代码高亮，无需切终端窗口</p>
+        <h4 data-i18n="features.card1.title">聊天与消息</h4>
+        <p data-i18n="features.card1.desc">流式 Markdown 回复、多会话 Tab 管理、会话内搜索、中断生成，无需切换终端</p>
       </div>
       <div class="focus-item reveal">
         <div class="icon">✂️</div>
-        <h4 data-i18n="features.card2.title">编辑器联动</h4>
-        <p data-i18n="features.card2.desc">代码块一键插入光标位置；@ 引用文件直接打开；右键发送选中代码到聊天</p>
+        <h4 data-i18n="features.card2.title">编辑器深度联动</h4>
+        <p data-i18n="features.card2.desc">代码块一键插入光标、@file 引用打开、右键发送选中代码、终端镜像、MCP 配置转发</p>
       </div>
       <div class="focus-item reveal">
-        <div class="icon">📑</div>
-        <h4 data-i18n="features.card3.title">多会话管理</h4>
-        <p data-i18n="features.card3.desc">Tab 式会话切换，历史记录本地持久化，支持会话内搜索和重命名</p>
+        <div class="icon">🧠</div>
+        <h4 data-i18n="features.card3.title">上下文记忆</h4>
+        <p data-i18n="features.card3.desc">会话记忆附带（last2/last10/all/custom），本地历史恢复，32k 字符截断保护</p>
       </div>
       <div class="focus-item reveal">
         <div class="icon">🎛️</div>
-        <h4 data-i18n="features.card4.title">多 Agent 切换</h4>
-        <p data-i18n="features.card4.desc">配置命名 Agent（不同路径/Profile/工作目录），模型选择器和 Profile 快速切换</p>
-      </div>
-      <div class="focus-item reveal">
-        <div class="icon">🔍</div>
-        <h4 data-i18n="features.card5.title">完全透明</h4>
-        <p data-i18n="features.card5.desc">可选展示思维链和工具调用过程；连接日志可查看和复制，权限提示可控</p>
-      </div>
-      <div class="focus-item reveal">
-        <div class="icon">🌐</div>
-        <h4 data-i18n="features.card6.title">双语界面</h4>
-        <p data-i18n="features.card6.desc">跟随 VS Code 显示语言自动切换，支持英文和简体中文</p>
+        <h4 data-i18n="features.card4.title">Agent & 模型控制</h4>
+        <p data-i18n="features.card4.desc">多 Agent 配置快速切换、双路径模型选择、Profile 一键切换、Settings 回退预设</p>
       </div>
       <div class="focus-item reveal">
         <div class="icon">🔒</div>
-        <h4 data-i18n="features.card7.title">权限审批 & MCP 转发</h4>
-        <p data-i18n="features.card7.desc">聊天内权限审批卡片，支持批准/拒绝及会话级/永久选项；自动从 .cursor / .vscode 加载 MCP 服务器配置并转发给 Agent</p>
+        <h4 data-i18n="features.card5.title">安全透明</h4>
+        <p data-i18n="features.card5.desc">聊天内权限审批、思维链/工具调用可选可见、连接日志面板、工作区文件隔离</p>
       </div>
       <div class="focus-item reveal">
-        <div class="icon">📡</div>
-        <h4 data-i18n="features.card8.title">智能流式体验</h4>
-        <p data-i18n="features.card8.desc">流式推送自动跟随滚动，手动滚动后暂停、5 秒无操作恢复；TOKEN 圆环实时显示用量占比</p>
+        <div class="icon">🌐</div>
+        <h4 data-i18n="features.card6.title">国际化</h4>
+        <p data-i18n="features.card6.desc">自动跟随 VS Code 语言（English/中文），全链路本地化，语言热同步</p>
+      </div>
+      <div class="focus-item reveal">
+        <div class="icon">✨</div>
+        <h4 data-i18n="features.card7.title">体验打磨</h4>
+        <p data-i18n="features.card7.desc">Token 用量环、智能流式滚动、连接变更自动重连、切换中断确认、FAQ 帮助面板</p>
       </div>
     </div>
   </div>
@@ -438,23 +433,21 @@ const dict={
     'install.vscode-link':'VS Code Marketplace 在线安装 ↗',
     'install.cursor-link':'OpenVSX 在线安装 ↗',
     'features.label':'特性','features.title':'核心特性',
-    'features.desc':'八大特性，让 AI 助手融入编辑器工作流',
-    'features.card1.title':'Sidebar Chat',
-    'features.card1.desc':'WebView 聊天面板，流式回复、Markdown 渲染、代码高亮，无需切终端窗口',
-    'features.card2.title':'编辑器联动',
-    'features.card2.desc':'代码块一键插入光标位置；@ 引用文件直接打开；右键发送选中代码到聊天',
-    'features.card3.title':'多会话管理',
-    'features.card3.desc':'Tab 式会话切换，历史记录本地持久化，支持会话内搜索和重命名',
-    'features.card4.title':'多 Agent 切换',
-    'features.card4.desc':'配置命名 Agent（不同路径/Profile/工作目录），模型选择器和 Profile 快速切换',
-    'features.card5.title':'完全透明',
-    'features.card5.desc':'可选展示思维链和工具调用过程；聊天内权限审批卡片支持会话级/永久选项，连接日志可查看和复制',
-    'features.card6.title':'双语界面',
-    'features.card6.desc':'跟随 VS Code 显示语言自动切换，支持英文和简体中文',
-    'features.card7.title':'权限审批 & MCP 转发',
-    'features.card7.desc':'聊天内权限审批卡片，支持批准/拒绝及会话级/永久选项；自动从 .cursor / .vscode 加载 MCP 服务器配置并转发给 Agent',
-    'features.card8.title':'智能流式体验',
-    'features.card8.desc':'流式推送自动跟随滚动，手动滚动后暂停、5 秒无操作恢复；TOKEN 圆环实时显示用量占比',
+    'features.desc':'七大特性，让 AI 助手融入编辑器工作流',
+    'features.card1.title':'聊天与消息',
+    'features.card1.desc':'流式 Markdown 回复、多会话 Tab 管理、会话内搜索、中断生成，无需切换终端',
+    'features.card2.title':'编辑器深度联动',
+    'features.card2.desc':'代码块一键插入光标、@file 引用打开、右键发送选中代码、终端镜像、MCP 配置转发',
+    'features.card3.title':'上下文记忆',
+    'features.card3.desc':'会话记忆附带（last2/last10/all/custom），本地历史恢复，32k 字符截断保护',
+    'features.card4.title':'Agent & 模型控制',
+    'features.card4.desc':'多 Agent 配置快速切换、双路径模型选择、Profile 一键切换、Settings 回退预设',
+    'features.card5.title':'安全透明',
+    'features.card5.desc':'聊天内权限审批、思维链/工具调用可选可见、连接日志面板、工作区文件隔离',
+    'features.card6.title':'国际化',
+    'features.card6.desc':'自动跟随 VS Code 语言（English/中文），全链路本地化，语言热同步',
+    'features.card7.title':'体验打磨',
+    'features.card7.desc':'Token 用量环、智能流式滚动、连接变更自动重连、切换中断确认、FAQ 帮助面板',
     'stat.version':'当前版本','stat.versionSub':'VS Code ≥ 1.85',
     'stat.license':'开源许可','stat.licenseSub':'MIT — 自由使用与修改',
     'stat.protocol':'通信协议','stat.protocolSub':'Agent Client Protocol',
@@ -471,23 +464,21 @@ const dict={
     'install.vscode-link':'Install from VS Code Marketplace ↗',
     'install.cursor-link':'Install from OpenVSX ↗',
     'features.label':'FEATURES','features.title':'Core Features',
-    'features.desc':'Eight features that bring AI assistant into your editor workflow',
-    'features.card1.title':'Sidebar Chat',
-    'features.card1.desc':'WebView chat panel with streaming replies, Markdown rendering, and syntax highlighting — no terminal alt-tab needed.',
+    'features.desc':'Seven features that bring AI assistant into your editor workflow',
+    'features.card1.title':'Chat & Messaging',
+    'features.card1.desc':'Streaming Markdown replies, multi-session tabs, in-conversation search, stop generation — all in the sidebar.',
     'features.card2.title':'Editor Integration',
-    'features.card2.desc':'Insert code blocks at cursor with one click; @file references open in editor; right-click to send selection to chat.',
-    'features.card3.title':'Multi-Session',
-    'features.card3.desc':'Tabbed conversations with local persistence, in-session search, rename and delete.',
-    'features.card4.title':'Agent Switching',
-    'features.card4.desc':'Named agent configs (path/profile/cwd), model selector, and profile switcher.',
-    'features.card5.title':'Full Visibility',
-    'features.card5.desc':'Optional thoughts & tool call display; in-chat permission cards with session/permanent options; connection logs.',
-    'features.card6.title':'Bilingual UI',
-    'features.card6.desc':'Auto-switches with VS Code display language. English and Simplified Chinese.',
-    'features.card7.title':'Permission Approval & MCP Config',
-    'features.card7.desc':'In-chat permission cards with approve/deny and session/permanent options. Auto-loads MCP servers from .cursor / .vscode configs and forwards to the agent.',
-    'features.card8.title':'Smart Streaming UX',
-    'features.card8.desc':'Auto-follow streaming output; pauses on manual scroll, resumes after 5s idle. Token usage ring with real-time percentage display.',
+    'features.card2.desc':'One-click code insert, @file references, send selection to chat, terminal mirror, MCP config forwarding.',
+    'features.card3.title':'Context Memory',
+    'features.card3.desc':'Context attach (last2/last10/all/custom), local history restoration, 32k char budget truncation.',
+    'features.card4.title':'Agent & Model Control',
+    'features.card4.desc':'Multi-agent switching, dual-path model selection, profile switcher, settings fallback presets.',
+    'features.card5.title':'Security & Visibility',
+    'features.card5.desc':'In-chat permission approval, thoughts & tool call visibility, connection logs, workspace isolation.',
+    'features.card6.title':'Internationalization',
+    'features.card6.desc':'Auto-follows VS Code language (English/中文), full UI localization, hot sync on language change.',
+    'features.card7.title':'UX Polish',
+    'features.card7.desc':'Token usage ring, smart streaming scroll, auto-reconnect on config change, FAQ panel.',
     'stat.version':'Version','stat.versionSub':'VS Code ≥ 1.85',
     'stat.license':'License','stat.licenseSub':'MIT — free to use and modify',
     'stat.protocol':'Protocol','stat.protocolSub':'Agent Client Protocol',
