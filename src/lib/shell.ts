@@ -279,10 +279,40 @@ function initCopy(): void {
   })
 }
 
+/* ── Hero video loop ── */
+function initHeroVideo(): void {
+  const video = document.getElementById('heroVideo') as HTMLVideoElement | null
+  if (!video || REDUCE) return
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (video.preload === 'none') video.preload = 'auto'
+          void video.play().catch(() => {})
+        } else {
+          video.pause()
+        }
+      })
+    },
+    { threshold: 0.05 },
+  )
+  observer.observe(video)
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      video.pause()
+    } else if (video.getBoundingClientRect().bottom > 0) {
+      void video.play().catch(() => {})
+    }
+  })
+}
+
 export function boot(): void {
   const dict = readJson<Dict>('i18n-data') ?? {}
   initLang(dict)
   initBackground()
+  initHeroVideo()
   initNav()
   initReveal()
   initTyping()

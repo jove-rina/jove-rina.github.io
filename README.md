@@ -42,6 +42,22 @@ public/                       CNAME、图片等原样复制到 dist 的静态资
 项目页安装框带复制按钮（复制的是 `install.copy` 里的纯命令，不是页面上的装饰文本），
 页尾有上一个/下一个项目导航。
 
+## Hero 背景循环
+
+首屏背景是预渲染的 6 秒静音循环（1280×720 / 30fps）：粒子从竖向光流聚成旋转虹膜，
+再散回光流。`<video>` 用 `preload="none"` + `IntersectionObserver` 懒加载，离屏或切到
+后台会暂停；`prefers-reduced-motion` 下只显示 poster。
+
+- 产物：`public/hero/hero-loop-1.webm`（VP9，~840KB）、`hero-loop-1.mp4`（H.264，~780KB）、`hero-poster-1.jpg`
+- 生成工具：`tools/hero-loop/`（three.js 只在 devDependencies，不进入站点构建）
+- 重新生成：`pnpm dev` 后打开 `http://localhost:5173/tools/hero-loop/index.html`，
+  逐帧调用 `window.renderFrame(t)` 截图，再编码：
+
+```bash
+ffmpeg -framerate 30 -i '%04d.jpg' -c:v libvpx-vp9 -pix_fmt yuv420p -b:v 0 -crf 46 -an hero-loop.webm
+ffmpeg -framerate 30 -i '%04d.jpg' -c:v libx264 -pix_fmt yuv420p -crf 31 -movflags +faststart -an hero-loop.mp4
+```
+
 页面 HTML 在构建时由 `vite.config.ts` 里的 `transformIndexHtml` 插件注入：把数据渲染成
 静态 HTML 写进入口，因此产物仍是纯静态页面（SEO 不依赖 JS）。
 

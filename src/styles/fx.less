@@ -162,6 +162,59 @@ body {
   opacity: .55;
 }
 
+/* hero video loop */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% 44%;
+  opacity: .92;
+  mix-blend-mode: screen;
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.hero-media-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 5, 16, .97) 0%, rgba(5, 5, 16, .82) 30%, rgba(5, 5, 16, .16) 56%, transparent 72%),
+    linear-gradient(180deg, rgba(5, 5, 16, .5), transparent 20%, transparent 76%, rgba(5, 5, 16, .7));
+}
+
+@media (max-width: 900px) {
+  .hero-video {
+    object-position: 50% 38%;
+    opacity: .8;
+  }
+
+  .hero-media-veil {
+    background:
+      linear-gradient(180deg, rgba(5, 5, 16, .82), rgba(5, 5, 16, .5) 40%, rgba(5, 5, 16, .85)),
+      linear-gradient(90deg, rgba(5, 5, 16, .8), transparent 70%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    display: none;
+  }
+
+  .hero-media {
+    background: url('/hero/hero-poster-1.jpg') center / cover no-repeat;
+    opacity: .55;
+  }
+}
+
 /* hero decoration */
 .hero-inner {
   position: relative;

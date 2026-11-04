@@ -7,6 +7,13 @@ export function renderHome(data: HomeData): { markup: string; dict: Record<strin
   const loc = new Loc()
 
   const hero = `<section class="hero">
+  <div class="hero-media" aria-hidden="true">
+    <video class="hero-video" id="heroVideo" muted loop playsinline preload="none" poster="/hero/hero-poster-1.jpg">
+      <source src="/hero/hero-loop-1.webm" type="video/webm" />
+      <source src="/hero/hero-loop-1.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-media-veil"></div>
+  </div>
   <div class="hero-inner hero-grid">
     <div class="hero-copy">
       <div class="hero-badge">
