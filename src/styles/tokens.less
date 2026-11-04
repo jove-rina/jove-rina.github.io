@@ -1,0 +1,118 @@
+:root {
+  --bg: #050510;
+  --bg2: #0a0a20;
+  --surface: rgba(18, 18, 34, .72);
+  --surface-border: rgba(167, 139, 250, .15);
+  --text: #eeeef8;
+  --text2: #8888bb;
+  --accent: #a78bfa;
+  --cyan: #22d3ee;
+  --pink: #e879f9;
+  --green: #6ee7b7;
+  --orange: #fbbf24;
+  --gradient-1: linear-gradient(135deg, #a78bfa, #22d3ee);
+  --gradient-2: linear-gradient(135deg, #22d3ee, #e879f9);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --font: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(167, 139, 250, .35);
+}
+
+#canvas-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Inline lucide icons */
+.ico {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.ico-xs {
+  width: 14px;
+  height: 14px;
+}
+
+.ico-sm {
+  width: 16px;
+  height: 16px;
+}
+
+.ico-hero {
+  width: 52px;
+  height: 52px;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .3;
+  }
+}
+
+@keyframes scrollWheel {
+  0% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(12px);
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
