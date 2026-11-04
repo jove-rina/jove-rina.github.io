@@ -27,7 +27,7 @@ src/
   lib/sections.ts             区块渲染（features / steps / qa / stats / screenshots …）
   lib/icons.ts                构建期把 lucide 图标节点序列化成内联 SVG
   lib/i18n.ts                 运行时语言切换（zh / en）
-  lib/shell.ts                背景光场、导航、滚动显现、打字机
+  lib/shell.ts                背景光场、导航、滚动显现、打字机、星云初始化
   styles/                     tokens / layout / home / project / fx（Less）
   entries/                    浏览器入口（引入样式 + boot）
 public/                       CNAME、图片等原样复制到 dist 的静态资源
@@ -42,21 +42,18 @@ public/                       CNAME、图片等原样复制到 dist 的静态资
 项目页安装框带复制按钮（复制的是 `install.copy` 里的纯命令，不是页面上的装饰文本），
 页尾有上一个/下一个项目导航。
 
-## Hero 背景循环
+## Hero 背景（WebGL 星云）
 
-首屏背景是预渲染的 6 秒静音循环（1280×720 / 30fps）：粒子从竖向光流聚成旋转虹膜，
-再散回光流。`<video>` 用 `preload="none"` + `IntersectionObserver` 懒加载，离屏或切到
-后台会暂停；`prefers-reduced-motion` 下只显示 poster。
+首屏是实时 WebGL 渲染的星云：域扭曲 fbm 生成紫/品红云带，中心橙色裂隙、右侧青色星团，
+上方星场、底部两层山脊剪影；指针移动带来轻微视差，滚动时星云缓慢上移。整个背景没有
+视频、图片或 three.js 依赖，只有一段 GLSL。
 
-- 产物：`public/hero/hero-loop-1.webm`（VP9，~840KB）、`hero-loop-1.mp4`（H.264，~780KB）、`hero-poster-1.jpg`
-- 生成工具：`tools/hero-loop/`（three.js 只在 devDependencies，不进入站点构建）
-- 重新生成：`pnpm dev` 后打开 `http://localhost:5173/tools/hero-loop/index.html`，
-  逐帧调用 `window.renderFrame(t)` 截图，再编码：
-
-```bash
-ffmpeg -framerate 30 -i '%04d.jpg' -c:v libvpx-vp9 -pix_fmt yuv420p -b:v 0 -crf 46 -an hero-loop.webm
-ffmpeg -framerate 30 -i '%04d.jpg' -c:v libx264 -pix_fmt yuv420p -crf 31 -movflags +faststart -an hero-loop.mp4
-```
+- 着色器：`src/lib/nebula-shader.ts`（GLSL ES 1.0，单文件）
+- 渲染器：`src/lib/nebula.ts` — 全屏三角形；内部渲染分辨率为 CSS 尺寸 ×0.5（移动端 ×0.42，
+  最宽 1280）；每 90 帧统计一次平均帧时，超过 26ms 自动降到 0.82 倍（下限 0.42）。
+- 生命周期：`IntersectionObserver` 离屏暂停，`visibilitychange` 后台暂停；
+  `prefers-reduced-motion` 下只渲染一帧静态星云，不启动 rAF。
+- 降级：拿不到 WebGL 上下文时，canvas 自身的 CSS 径向渐变作为背景。
 
 页面 HTML 在构建时由 `vite.config.ts` 里的 `transformIndexHtml` 插件注入：把数据渲染成
 静态 HTML 写进入口，因此产物仍是纯静态页面（SEO 不依赖 JS）。

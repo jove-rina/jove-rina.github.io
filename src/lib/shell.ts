@@ -1,5 +1,6 @@
 import { animate, inView, scroll, stagger } from 'motion'
 import { getLang, initLang, type Dict, type Lang } from './i18n'
+import { createNebula } from './nebula'
 
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -279,63 +280,47 @@ function initCopy(): void {
   })
 }
 
-/* ── Hero video loop ── */
-function initHeroVideo(): void {
-  const video = document.getElementById('heroVideo') as HTMLVideoElement | null
-  if (!video || REDUCE) return
+/* ── Hero WebGL nebula ── */
+function initHeroNebula(): void {
+  const canvas = document.getElementById('heroNebula') as HTMLCanvasElement | null
+  if (!canvas) return
 
-  let active = false
-  let requested = false
+  const nebula = createNebula(canvas)
+  if (!nebula) {
+    canvas.classList.add('is-fallback')
+    return
+  }
 
-  const tryPlay = (): void => {
-    if (!active || document.hidden) return
-    if (video.readyState < 2) {
-      if (!requested) {
-        requested = true
-        video.preload = 'auto'
-        video.load()
-      }
-      return
-    }
-    void video.play().catch(() => {})
+  if (REDUCE) {
+    nebula.render(6.5)
+    return
+  }
+
+  let visible = true
+  const sync = (): void => {
+    if (visible && !document.hidden) nebula.start()
+    else nebula.stop()
   }
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        active = entry.isIntersecting
-        if (active) tryPlay()
-        else video.pause()
+        visible = entry.isIntersecting
       })
+      sync()
     },
-    { threshold: 0.05 },
+    { threshold: 0.02 },
   )
-  observer.observe(video)
-
-  video.addEventListener('loadeddata', tryPlay)
-  video.addEventListener('canplay', tryPlay)
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) video.pause()
-    else tryPlay()
-  })
-
-  // Some browsers block autoplay until the first interaction; retry then.
-  const wake = (): void => {
-    tryPlay()
-  }
-  window.addEventListener('pointerdown', wake, { once: true, passive: true })
-  window.addEventListener('scroll', wake, { once: true, passive: true })
-  window.addEventListener('keydown', wake, { once: true })
-
-  tryPlay()
+  observer.observe(canvas)
+  document.addEventListener('visibilitychange', sync)
+  sync()
 }
 
 export function boot(): void {
   const dict = readJson<Dict>('i18n-data') ?? {}
   initLang(dict)
   initBackground()
-  initHeroVideo()
+  initHeroNebula()
   initNav()
   initReveal()
   initTyping()

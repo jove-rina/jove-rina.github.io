@@ -15,10 +15,8 @@
   },
   "devDependencies": {
     "@types/node": "26.6.6",
-    "@types/three": "^0.187.0",
     "less": "4.9.1",
     "lucide": "1.68.0",
-    "three": "^0.187.0",
     "typescript": "5.9.3",
     "vite": "8.3.5"
   },
