@@ -28,10 +28,17 @@ src/
   lib/icons.ts                构建期把 lucide 图标节点序列化成内联 SVG
   lib/i18n.ts                 运行时语言切换（zh / en）
   lib/shell.ts                背景粒子、导航、滚动显现、打字机
-  styles/                     tokens / layout / home / project（Less）
+  styles/                     tokens / layout / home / project / fx（Less）
   entries/                    浏览器入口（引入样式 + boot）
 public/                       CNAME、图片等原样复制到 dist 的静态资源
 ```
+
+视觉层在 `src/styles/fx.less`：极光/噪点背景、滚动进度条、区块编号、卡片聚光、
+项目页光晕与截图缩放。交互动效由 `motion` 驱动（`src/lib/shell.ts`）：数字滚动、
+面板行入场、按钮磁吸、滚动进度；`prefers-reduced-motion` 下全部降级为静态。
+
+项目页安装框带复制按钮（复制的是 `install.copy` 里的纯命令，不是页面上的装饰文本），
+页尾有上一个/下一个项目导航。
 
 页面 HTML 在构建时由 `vite.config.ts` 里的 `transformIndexHtml` 插件注入：把数据渲染成
 静态 HTML 写进入口，因此产物仍是纯静态页面（SEO 不依赖 JS）。

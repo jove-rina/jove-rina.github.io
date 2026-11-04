@@ -1,4 +1,7 @@
+import { animate, inView, scroll, stagger } from 'motion'
 import { getLang, initLang, type Dict, type Lang } from './i18n'
+
+const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function readJson<T>(id: string): T | null {
   const el = document.getElementById(id)
@@ -12,6 +15,7 @@ function readJson<T>(id: string): T | null {
 
 /* ── Particle background ── */
 function initParticles(): void {
+  if (REDUCE) return
   const canvas = document.getElementById('canvas-bg') as HTMLCanvasElement | null
   if (!canvas) return
   const ctx = canvas.getContext('2d')
@@ -208,6 +212,137 @@ function initAnchors(): void {
   })
 }
 
+/* ── Scroll progress bar ── */
+function initProgress(): void {
+  if (REDUCE) return
+  const bar = document.createElement('div')
+  bar.className = 'scroll-progress'
+  bar.setAttribute('aria-hidden', 'true')
+  document.body.appendChild(bar)
+  scroll(animate(bar, { scaleX: [0, 1] }, { ease: 'linear' }))
+}
+
+/* ── Pointer spotlight on cards ── */
+function initSpotlight(): void {
+  if (REDUCE) return
+  const selector = '.project-card, .feature-card, .about-card, .focus-item, .stat-card, .hero-panel, .update-item'
+  document.addEventListener(
+    'pointermove',
+    (e) => {
+      const target = e.target as Element | null
+      const el = target?.closest?.(selector) as HTMLElement | null
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+      el.style.setProperty('--my', `${e.clientY - r.top}px`)
+    },
+    { passive: true },
+  )
+}
+
+/* ── Magnetic buttons ── */
+function initMagnetic(): void {
+  if (REDUCE || !window.matchMedia('(pointer: fine)').matches) return
+  document.querySelectorAll<HTMLElement>('.btn-primary, .btn-secondary').forEach((btn) => {
+    btn.addEventListener('pointermove', (e) => {
+      const r = btn.getBoundingClientRect()
+      const dx = ((e.clientX - r.left) / r.width - 0.5) * 10
+      const dy = ((e.clientY - r.top) / r.height - 0.5) * 6
+      animate(btn, { x: dx, y: dy }, { type: 'spring', stiffness: 260, damping: 18 })
+    })
+    btn.addEventListener('pointerleave', () => {
+      animate(btn, { x: 0, y: 0 }, { type: 'spring', stiffness: 260, damping: 20 })
+    })
+  })
+}
+
+/* ── Number counters ── */
+function initCounters(): void {
+  document.querySelectorAll<HTMLElement>('.stat-card .num, .stat-item .stat-num').forEach((el) => {
+    const raw = el.textContent?.trim() ?? ''
+    if (!/^\d{1,4}$/.test(raw)) return
+    const target = Number(raw)
+    if (!target) return
+    let stop: (() => void) | undefined
+    stop = inView(
+      el,
+      () => {
+        if (REDUCE) {
+          el.textContent = String(target)
+          stop?.()
+          return
+        }
+        animate(0, target, {
+          duration: 1.1,
+          ease: [0.16, 1, 0.3, 1],
+          onUpdate: (v) => {
+            el.textContent = String(Math.round(Number(v)))
+          },
+        })
+        stop?.()
+      },
+      { amount: 0.6 },
+    )
+  })
+}
+
+/* ── Hero release rows ── */
+function initHeroPanel(): void {
+  if (REDUCE) return
+  const rows = Array.from(document.querySelectorAll('.release-row'))
+  if (!rows.length) return
+  animate(
+    rows,
+    { opacity: [0, 1], x: [18, 0] },
+    { delay: stagger(0.07, { startDelay: 0.55 }), duration: 0.55, ease: [0.16, 1, 0.3, 1] },
+  )
+}
+
+/* ── Copy install commands ── */
+async function writeClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    /* fall through to execCommand */
+  }
+  const area = document.createElement('textarea')
+  area.value = text
+  area.setAttribute('readonly', '')
+  area.style.position = 'fixed'
+  area.style.top = '-1000px'
+  document.body.appendChild(area)
+  area.select()
+  let ok = false
+  try {
+    ok = document.execCommand('copy')
+  } catch {
+    ok = false
+  }
+  area.remove()
+  return ok
+}
+
+function initCopy(): void {
+  document.addEventListener('click', async (e) => {
+    const btn = (e.target as Element | null)?.closest?.('[data-copy]') as HTMLElement | null
+    if (!btn) return
+    const box = btn.closest('.install-box')
+    const body = box?.querySelector('.install-body') as HTMLElement | null
+    if (!body) return
+    const label = btn.querySelector('.copy-label')
+    const previous = label?.textContent ?? ''
+    const ok = await writeClipboard(btn.dataset.copyText || body.innerText.trim())
+    if (!ok) return
+    if (label) label.textContent = getLang() === 'zh' ? '已复制' : 'Copied'
+    btn.classList.add('copied')
+    setTimeout(() => {
+      if (label) label.textContent = previous
+      btn.classList.remove('copied')
+    }, 1400)
+  })
+}
+
 export function boot(): void {
   const dict = readJson<Dict>('i18n-data') ?? {}
   initLang(dict)
@@ -216,4 +351,10 @@ export function boot(): void {
   initReveal()
   initTyping()
   initAnchors()
+  initProgress()
+  initSpotlight()
+  initMagnetic()
+  initCounters()
+  initHeroPanel()
+  initCopy()
 }

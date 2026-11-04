@@ -23,6 +23,7 @@ export const page: ProjectPage = {
       { icon: 'package', text: 'v2.0.0' },
     ],
     install: {
+      copy: 'https://github.com/jove-rina/lanhu-axure-extractor-ext/releases/tag/v2.0.0',
       blocks: [
         { kind: 'comment', text: { zh: '从 GitHub Releases 下载预编译包', en: 'Download the prebuilt package from GitHub Releases' } },
         {

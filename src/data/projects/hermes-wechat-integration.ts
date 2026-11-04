@@ -23,6 +23,7 @@ export const page: ProjectPage = {
       { icon: 'qr-code', text: 'iLink Bot API', tone: 'pink' },
     ],
     install: {
+      copy: 'hermes skills tap add jove-rina/jove-hermes-skills\nhermes skills install jove-rina/jove-hermes-skills/hermes-wechat-integration\n/skill hermes-wechat-integration',
       blocks: [
         { kind: 'comment', text: { zh: '添加技能源', en: 'Add the skills tap' } },
         { kind: 'code', text: 'hermes skills tap add jove-rina/jove-hermes-skills' },

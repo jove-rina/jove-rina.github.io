@@ -24,6 +24,7 @@ export const page: ProjectPage = {
     ],
     install: {
       title: { zh: '本地运行', en: 'Run locally' },
+      copy: 'git clone https://github.com/jove-rina/rinova-devtools.git\ncd rinova-devtools && pnpm i && pnpm dev',
       blocks: [
         {
           kind: 'comment',

@@ -7,41 +7,73 @@ export function renderHome(data: HomeData): { markup: string; dict: Record<strin
   const loc = new Loc()
 
   const hero = `<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge">
-      <span class="dot"></span>
-      ${loc.span('hero.badge', data.badge)}
+  <div class="hero-inner hero-grid">
+    <div class="hero-copy">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        ${loc.span('hero.badge', data.badge)}
+      </div>
+      <h1 class="hero-title">
+        ${loc.span('hero.title1', data.title1)}<br />
+        <span class="gradient">${esc(data.brand)}</span>
+      </h1>
+      ${loc.el('p', 'hero.sub', data.sub, 'hero-sub')}
+      <div class="hero-type"><span id="typing"></span><span class="cursor"></span></div>
+      <div class="hero-cta">
+        <a href="${esc(data.ctas[0].href)}" class="btn-primary">
+          ${loc.span('hero.cta0', data.ctas[0].label)} ${icon('arrow-right', 'ico ico-sm')}
+        </a>
+        <a href="${esc(data.ctas[1].href)}" target="_blank" rel="noopener" class="btn-secondary">
+          ${githubIcon('ico ico-sm')} ${loc.span('hero.cta1', data.ctas[1].label)}
+        </a>
+      </div>
+      <div class="hero-stats">
+        ${data.stats
+          .map(
+            (st, i) => `<div class="stat-item">
+          <div class="stat-num">${esc(st.num)}</div>
+          ${loc.el('div', `hero.stat${i + 1}`, st.label, 'stat-label')}
+        </div>`,
+          )
+          .join('\n        ')}
+      </div>
     </div>
-    <h1 class="hero-title">
-      ${loc.span('hero.title1', data.title1)}<br />
-      <span class="gradient">${esc(data.brand)}</span>
-    </h1>
-    ${loc.el('p', 'hero.sub', data.sub, 'hero-sub')}
-    <div class="hero-type"><span id="typing"></span><span class="cursor"></span></div>
-    <div class="hero-cta">
-      <a href="${esc(data.ctas[0].href)}" class="btn-primary">
-        ${loc.span('hero.cta0', data.ctas[0].label)} ${icon('arrow-right', 'ico ico-sm')}
-      </a>
-      <a href="${esc(data.ctas[1].href)}" target="_blank" rel="noopener" class="btn-secondary">
-        ${githubIcon('ico ico-sm')} ${loc.span('hero.cta1', data.ctas[1].label)}
-      </a>
-    </div>
-    <div class="hero-stats">
-      ${data.stats
-        .map(
-          (st, i) => `<div class="stat-item">
-        <div class="stat-num">${esc(st.num)}</div>
-        ${loc.el('div', `hero.stat${i + 1}`, st.label, 'stat-label')}
-      </div>`,
-        )
-        .join('\n      ')}
-    </div>
+    <aside class="hero-panel" aria-label="Latest releases">
+      <div class="panel-head">
+        <span class="pulse-dot"></span>
+        ${loc.span('hero.panel.label', data.heroPanel.label, 'panel-label')}
+        <span class="panel-count">${esc(data.heroPanel.count)}</span>
+      </div>
+      <ul class="release-list">
+        ${data.heroPanel.items
+          .map(
+            (it) => `<li>
+          <a href="${esc(it.href)}" class="release-row">
+            <span class="release-dot ${it.tone}"></span>
+            <span class="release-name">${esc(it.name)}</span>
+            <span class="release-meta">${esc(it.meta)}</span>
+            ${icon('arrow-up-right', 'ico ico-xs release-arrow')}
+          </a>
+        </li>`,
+          )
+          .join('\n        ')}
+      </ul>
+      <div class="panel-note">${loc.span('hero.panel.note', data.heroPanel.note)}</div>
+    </aside>
   </div>
   <div class="scroll-ind">
     ${loc.span('hero.scroll', { zh: '向下滚动', en: 'SCROLL' })}
     <div class="mouse"></div>
   </div>
-</section>`
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    ${[...data.marquee, ...data.marquee]
+      .map((word) => `<span>${esc(word)}</span>`)
+      .join('\n    ')}
+  </div>
+</div>`
 
   const projects = `<section class="section" id="projects">
   <div class="section-inner">
@@ -142,6 +174,9 @@ export function renderHome(data: HomeData): { markup: string; dict: Record<strin
       </div>`,
         )
         .join('\n      ')}
+    </div>
+    <div class="stack-row reveal">
+      ${data.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join('\n      ')}
     </div>
   </div>
 </section>`

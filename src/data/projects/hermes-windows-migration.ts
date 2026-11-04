@@ -23,6 +23,7 @@ export const page: ProjectPage = {
       { icon: 'monitor', text: 'Windows Only', tone: 'orange' },
     ],
     install: {
+      copy: 'hermes skills tap add jove-rina/jove-hermes-skills\nhermes skills install jove-rina/jove-hermes-skills/hermes-windows-migration\n/skill hermes-windows-migration',
       blocks: [
         { kind: 'comment', text: { zh: '安装技能源', en: 'Add the skills tap' } },
         { kind: 'code', text: 'hermes skills tap add jove-rina/jove-hermes-skills' },

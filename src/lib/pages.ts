@@ -34,8 +34,14 @@ export function resolvePage(relativePath: string): {
 
   const match = /^projects\/([^/]+)\/index\.html$/.exec(relativePath)
   if (!match) return null
-  const project = projects.find((p) => p.slug === match[1])
-  if (!project) return null
-  const { markup } = renderProject(project)
+  const index = projects.findIndex((p) => p.slug === match[1])
+  if (index === -1) return null
+  const project = projects[index]
+  const at = (i: number) => {
+    const p = projects[(i + projects.length) % projects.length]
+    return { name: p.name, href: `/projects/${p.slug}/` }
+  }
+  const neighbours = { prev: at(index - 1), next: at(index + 1) }
+  const { markup } = renderProject(project, neighbours)
   return { title: project.title, description: project.description.zh, markup }
 }

@@ -1,11 +1,19 @@
 body[data-page='home'] {
   .section {
-    padding: 120px 28px;
+    padding: 88px 28px;
   }
 
   .section-header {
     text-align: center;
-    margin-bottom: 64px;
+    margin-bottom: 44px;
+  }
+
+  .section-label {
+    justify-content: center;
+  }
+
+  .section-label::after {
+    display: none;
   }
 
   .section-title {
@@ -120,8 +128,8 @@ body[data-page='home'] {
 
 .hero-stats {
   display: flex;
-  gap: 48px;
-  margin-top: 56px;
+  gap: 34px;
+  margin-top: 44px;
   flex-wrap: wrap;
   opacity: 0;
   transform: translateY(30px);
@@ -595,7 +603,7 @@ body[data-page='home'] {
     margin-top: 40px;
   }
 
-  .scroll-ind {
+  body[data-page='home'] .scroll-ind {
     display: none;
   }
 

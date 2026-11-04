@@ -96,7 +96,7 @@ export function renderHero(
     title: string
     sub: L10n
     badges: { icon?: IconName; text: string; tone?: string }[]
-    install: { title?: L10n; blocks: InstallBlock[] }
+    install: { title?: L10n; copy?: string; blocks: InstallBlock[] }
   },
 ): string {
   const badges = p.badges
@@ -117,7 +117,13 @@ export function renderHero(
       ${badges}
     </div>
     <div class="install-box">
-      <div class="install-header">${icon('zap', 'ico ico-xs')} ${loc.span('install.label', installTitle)}</div>
+      <div class="install-header">${icon('zap', 'ico ico-xs')} ${loc.span('install.label', installTitle)}
+        <button class="copy-btn" type="button" data-copy${
+          p.install.copy ? ` data-copy-text="${esc(p.install.copy)}"` : ''
+        }>
+          ${icon('copy', 'ico ico-xs')} ${loc.span('install.copy', { zh: '复制', en: 'Copy' }, 'copy-label')}
+        </button>
+      </div>
       <div class="install-body">
         ${p.install.blocks.map((b, i) => renderInstallBlock(b, loc, i)).join('\n        ')}
       </div>

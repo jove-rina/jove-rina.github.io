@@ -91,7 +91,7 @@ export interface ProjectPage {
     title: string
     sub: L10n
     badges: Badge[]
-    install: { title?: L10n; blocks: InstallBlock[] }
+    install: { title?: L10n; copy?: string; blocks: InstallBlock[] }
   }
   nav: { href: string; label: L10n }[]
   sections: Section[]
@@ -122,6 +122,14 @@ export interface HomeData {
   phrases: { zh: string[]; en: string[] }
   ctas: Cta[]
   stats: Stat[]
+  heroPanel: {
+    label: L10n
+    count: string
+    note: L10n
+    items: { name: string; meta: string; href: string; tone: Tone }[]
+  }
+  marquee: string[]
+  stack: string[]
   projects: {
     label: L10n
     title: L10n

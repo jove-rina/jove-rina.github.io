@@ -22,6 +22,19 @@ export const home: HomeData = {
     { num: '1', label: { zh: '浏览器扩展', en: 'Extension' } },
     { num: '3', label: { zh: '工具链项目', en: 'Toolchain' } },
   ],
+  heroPanel: {
+    label: { zh: '正在构建', en: 'Building in public' },
+    count: '04',
+    note: { zh: '全部开源 · 持续交付', en: 'All open source · shipping continuously' },
+    items: [
+      { name: 'Rinova Playground', meta: 'npm 0.1.5', href: '/projects/rinova-playground/', tone: 'pink' },
+      { name: 'Rinova Devtools', meta: 'v0.1.0', href: '/projects/rinova-devtools/', tone: 'cyan' },
+      { name: 'Void', meta: 'v0.4.0', href: '/projects/rinova-void/', tone: 'green' },
+      { name: 'Rina Hermes ACP', meta: 'v0.3.2', href: '/projects/rina-hermes-acp/', tone: 'orange' },
+    ],
+  },
+  marquee: ['Vue 3', 'Vite 8', 'Tauri 2', 'TypeScript', 'Less', 'Shadow DOM', 'MCP', 'shiki', 'Motion', 'Hermes Skills'],
+  stack: ['TypeScript', 'Vue 3', 'Vite 8', 'Tauri 2', 'Rust', 'Node.js', 'Prisma', 'PostgreSQL', 'shiki', 'Motion'],
   projects: {
     label: { zh: '项目', en: 'PROJECTS' },
     title: { zh: '开源项目', en: 'Open Source' },

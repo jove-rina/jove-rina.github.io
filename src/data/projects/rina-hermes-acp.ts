@@ -24,6 +24,7 @@ export const page: ProjectPage = {
     ],
     install: {
       title: { zh: '快速安装', en: 'Quick Install' },
+      copy: 'https://marketplace.visualstudio.com/items?itemName=JoveRina.rina-hermes-acp',
       blocks: [
         { kind: 'comment', text: { zh: 'VS Code — 扩展市场搜索', en: 'VS Code — search extensions for' } },
         { kind: 'inline', parts: ['"Rina Hermes ACP"', ' ', { text: { zh: '或', en: 'or' } }, ' ', '"JoveRina"'] },

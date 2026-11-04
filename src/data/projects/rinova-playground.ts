@@ -24,6 +24,7 @@ export const page: ProjectPage = {
     ],
     install: {
       title: { zh: '快速开始', en: 'Quick Start' },
+      copy: 'pnpm create rinova-playground my-lib\ncd my-lib && pnpm i && pnpm dev',
       blocks: [
         { kind: 'comment', text: { zh: '创建项目', en: 'Create a project' } },
         { kind: 'code', text: 'pnpm create rinova-playground my-lib' },

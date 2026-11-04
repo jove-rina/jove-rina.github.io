@@ -24,6 +24,7 @@ export const page: ProjectPage = {
     ],
     install: {
       title: { zh: '安装', en: 'Install' },
+      copy: 'https://github.com/jove-rina/rinova-void/releases',
       blocks: [
         {
           kind: 'comment',
