@@ -284,28 +284,51 @@ function initHeroVideo(): void {
   const video = document.getElementById('heroVideo') as HTMLVideoElement | null
   if (!video || REDUCE) return
 
+  let active = false
+  let requested = false
+
+  const tryPlay = (): void => {
+    if (!active || document.hidden) return
+    if (video.readyState < 2) {
+      if (!requested) {
+        requested = true
+        video.preload = 'auto'
+        video.load()
+      }
+      return
+    }
+    void video.play().catch(() => {})
+  }
+
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (video.preload === 'none') video.preload = 'auto'
-          void video.play().catch(() => {})
-        } else {
-          video.pause()
-        }
+        active = entry.isIntersecting
+        if (active) tryPlay()
+        else video.pause()
       })
     },
     { threshold: 0.05 },
   )
   observer.observe(video)
 
+  video.addEventListener('loadeddata', tryPlay)
+  video.addEventListener('canplay', tryPlay)
+
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      video.pause()
-    } else if (video.getBoundingClientRect().bottom > 0) {
-      void video.play().catch(() => {})
-    }
+    if (document.hidden) video.pause()
+    else tryPlay()
   })
+
+  // Some browsers block autoplay until the first interaction; retry then.
+  const wake = (): void => {
+    tryPlay()
+  }
+  window.addEventListener('pointerdown', wake, { once: true, passive: true })
+  window.addEventListener('scroll', wake, { once: true, passive: true })
+  window.addEventListener('keydown', wake, { once: true })
+
+  tryPlay()
 }
 
 export function boot(): void {
