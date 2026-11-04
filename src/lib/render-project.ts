@@ -43,7 +43,16 @@ export function renderProject(
 </nav>`
     : ''
 
-  const markup = `<canvas id="canvas-bg"></canvas>
+  const markup = `<div class="bg" aria-hidden="true">
+  <div class="bg-scroll">
+    <span class="bg-orb violet"></span>
+    <span class="bg-orb cyan"></span>
+    <span class="bg-orb pink"></span>
+    <span class="bg-sweep"></span>
+  </div>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+</div>
 
 ${renderProjectNav(loc, page.name, page.nav, page.repo)}
 

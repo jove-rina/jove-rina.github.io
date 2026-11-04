@@ -2,18 +2,121 @@
    FX — 视觉层：光晕、噪点、聚光、进度、面板
    ═══════════════════════════════════════ */
 
-/* page atmosphere */
-body::before {
-  content: '';
+/* background field (driven by motion) */
+.bg {
   position: fixed;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(52% 42% at 12% 6%, rgba(167, 139, 250, .16), transparent 62%),
-    radial-gradient(40% 34% at 88% 0%, rgba(34, 211, 238, .12), transparent 62%),
-    radial-gradient(44% 40% at 72% 92%, rgba(232, 121, 249, .08), transparent 65%);
-  filter: blur(6px);
+  background: #050510;
+}
+
+.bg-scroll {
+  position: absolute;
+  inset: -14%;
+  will-change: transform;
+}
+
+.bg-orb {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.bg::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -18%;
+  width: 120vmax;
+  height: 80vmax;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 42%, rgba(167, 139, 250, .22), transparent 62%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 52%, rgba(5, 5, 16, .55));
+}
+
+.bg-orb.violet {
+  width: 52vmax;
+  height: 52vmax;
+  left: -12%;
+  top: -18%;
+  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, .78), rgba(139, 92, 246, 0) 64%);
+  opacity: .7;
+}
+
+.bg-orb.cyan {
+  width: 40vmax;
+  height: 40vmax;
+  right: -10%;
+  top: -6%;
+  background: radial-gradient(circle, rgba(34, 211, 238, .55), transparent 64%);
+  opacity: .62;
+}
+
+.bg-orb.pink {
+  width: 44vmax;
+  height: 44vmax;
+  left: 28%;
+  bottom: -26%;
+  background: radial-gradient(circle, rgba(232, 121, 249, .46), transparent 66%);
+  opacity: .55;
+}
+
+.bg-sweep {
+  position: absolute;
+  left: 50%;
+  top: -10%;
+  width: 90vmax;
+  height: 90vmax;
+  margin-left: -45vmax;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(167, 139, 250, .2) 80deg, transparent 180deg, rgba(34, 211, 238, .1) 260deg, transparent 360deg);
+  filter: blur(60px);
+  opacity: .5;
+  will-change: transform;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 78% 62% at 50% 22%, #000 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 78% 62% at 50% 22%, #000 20%, transparent 78%);
+  opacity: .6;
+}
+
+.bg-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 139, 250, .16), transparent 62%);
+  filter: blur(30px);
+  opacity: 0;
+  transition: opacity .4s ease;
+  will-change: transform;
+}
+
+.bg-glow.active {
+  opacity: 1;
 }
 
 body::after {
@@ -60,19 +163,6 @@ body {
 }
 
 /* hero decoration */
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: radial-gradient(rgba(167, 139, 250, .22) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: .5;
-  mask-image: radial-gradient(ellipse 55% 55% at 32% 42%, #000, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse 55% 55% at 32% 42%, #000, transparent 72%);
-}
-
 .hero-inner {
   position: relative;
   z-index: 1;

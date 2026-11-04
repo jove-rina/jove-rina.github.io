@@ -207,7 +207,16 @@ export function renderHome(data: HomeData): { markup: string; dict: Record<strin
     '\\u003c',
   )}</script>`
 
-  const markup = `<canvas id="canvas-bg"></canvas>
+  const markup = `<div class="bg" aria-hidden="true">
+  <div class="bg-scroll">
+    <span class="bg-orb violet"></span>
+    <span class="bg-orb cyan"></span>
+    <span class="bg-orb pink"></span>
+    <span class="bg-sweep"></span>
+  </div>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+</div>
 
 ${renderHomeNav(loc)}
 

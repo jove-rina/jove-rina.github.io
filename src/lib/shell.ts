@@ -13,117 +13,53 @@ function readJson<T>(id: string): T | null {
   }
 }
 
-/* ── Particle background ── */
-function initParticles(): void {
-  if (REDUCE) return
-  const canvas = document.getElementById('canvas-bg') as HTMLCanvasElement | null
-  if (!canvas) return
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
+/* ── Background field (motion) ── */
+function initBackground(): void {
+  const root = document.querySelector('.bg')
+  if (!root || REDUCE) return
 
-  let W = 0
-  let H = 0
-  const mouse = { x: 0, y: 0 }
+  const scrollLayer = root.querySelector('.bg-scroll')
+  const orbs = Array.from(root.querySelectorAll<HTMLElement>('.bg-orb'))
+  const sweep = root.querySelector<HTMLElement>('.bg-sweep')
 
-  class Particle {
-    x = 0
-    y = 0
-    size = 0
-    speedX = 0
-    speedY = 0
-    opacity = 0
-    hue = 0
-
-    constructor() {
-      this.reset()
-    }
-
-    reset(): void {
-      this.x = Math.random() * W
-      this.y = Math.random() * H
-      this.size = Math.random() * 2 + 1
-      this.speedX = (Math.random() - 0.5) * 0.5
-      this.speedY = (Math.random() - 0.5) * 0.5
-      this.opacity = Math.random() * 0.5 + 0.1
-      this.hue = 250 + Math.random() * 60
-    }
-
-    update(): void {
-      this.x += this.speedX
-      this.y += this.speedY
-      const dx = mouse.x - this.x
-      const dy = mouse.y - this.y
-      const dist = Math.sqrt(dx * dx + dy * dy)
-      if (dist < 150) {
-        const force = ((150 - dist) / 150) * 0.3
-        this.x -= (dx / dist) * force
-        this.y -= (dy / dist) * force
-      }
-      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset()
-    }
-
-    draw(): void {
-      if (!ctx) return
-      ctx.beginPath()
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-      ctx.fillStyle = `hsla(${this.hue},70%,70%,${this.opacity})`
-      ctx.fill()
-    }
-  }
-
-  const particles: Particle[] = []
-  for (let i = 0; i < 120; i++) particles.push(new Particle())
-
-  const resize = (): void => {
-    W = canvas.width = window.innerWidth
-    H = canvas.height = window.innerHeight
-  }
-  window.addEventListener('resize', resize)
-  resize()
-
-  const drawLines = (): void => {
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x
-        const dy = particles[i].y - particles[j].y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 180) {
-          ctx.beginPath()
-          ctx.moveTo(particles[i].x, particles[i].y)
-          ctx.lineTo(particles[j].x, particles[j].y)
-          ctx.strokeStyle = `hsla(260,60%,70%,${0.06 * (1 - dist / 180)})`
-          ctx.lineWidth = 0.5
-          ctx.stroke()
-        }
-      }
-    }
-  }
-
-  const animate = (): void => {
-    ctx.clearRect(0, 0, W, H)
-    particles.forEach((p) => {
-      p.update()
-      p.draw()
+  const drift = [
+    { x: [0, 36, -18, 0], y: [0, -28, 22, 0], scale: [1, 1.06, 0.97, 1] },
+    { x: [0, -30, 20, 0], y: [0, 24, -18, 0], scale: [1, 0.95, 1.05, 1] },
+    { x: [0, 26, -24, 0], y: [0, -20, 16, 0], scale: [1, 1.08, 0.98, 1] },
+  ]
+  orbs.forEach((orb, i) => {
+    animate(orb, drift[i % drift.length], {
+      duration: 26 + i * 6,
+      repeat: Infinity,
+      ease: 'easeInOut',
     })
-    drawLines()
-    requestAnimationFrame(animate)
-  }
-  animate()
-
-  document.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX
-    mouse.y = e.clientY
   })
-  document.addEventListener(
-    'touchmove',
-    (e) => {
-      const t = e.touches[0]
-      if (!t) return
-      mouse.x = t.clientX
-      mouse.y = t.clientY
-    },
-    { passive: true },
-  )
+
+  if (sweep) {
+    animate(sweep, { rotate: 360 }, { duration: 90, repeat: Infinity, ease: 'linear' })
+  }
+
+  if (scrollLayer) {
+    scroll(animate(scrollLayer, { y: [0, -90] }, { ease: 'linear' }))
+  }
+
+  const glow = root.querySelector<HTMLElement>('.bg-glow')
+  if (glow && window.matchMedia('(pointer: fine)').matches) {
+    const size = 420
+    document.addEventListener(
+      'pointermove',
+      (e) => {
+        glow.classList.add('active')
+        animate(
+          glow,
+          { x: e.clientX - size / 2, y: e.clientY - size / 2 },
+          { type: 'spring', stiffness: 70, damping: 22, mass: 0.6 },
+        )
+      },
+      { passive: true },
+    )
+    document.addEventListener('pointerleave', () => glow.classList.remove('active'))
+  }
 }
 
 /* ── Nav hide on scroll ── */
@@ -346,7 +282,7 @@ function initCopy(): void {
 export function boot(): void {
   const dict = readJson<Dict>('i18n-data') ?? {}
   initLang(dict)
-  initParticles()
+  initBackground()
   initNav()
   initReveal()
   initTyping()
